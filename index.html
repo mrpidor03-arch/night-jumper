@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -68,6 +68,7 @@
         /* ========== MAIN MENU ========== */
         .main-menu {
             background: linear-gradient(145deg, #2a3150, #1a1f35);
+            position: relative;
         }
         .moon-icon {
             width: 70px;
@@ -83,41 +84,117 @@
             50% { transform: scale(1.05); opacity: 1; }
         }
 
+        /* Блок с отзывами */
+        .review-message {
+            margin: 15px 0 20px 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+            text-align: center;
+            font-size: 11px;
+            color: #ffd966;
+            backdrop-filter: blur(4px);
+            width: 90%;
+            max-width: 280px;
+            border: 1px solid rgba(255,217,102,0.3);
+        }
+        .review-message p {
+            margin: 4px 0;
+            line-height: 1.3;
+        }
+        .review-message .lang-ru {
+            color: #fff;
+        }
+        .review-message .lang-en {
+            color: #ddd;
+        }
+        .review-message .lang-es {
+            color: #ccc;
+        }
+
         .menu-btn {
             background: linear-gradient(135deg, #4a5b8c, #2e3a5c);
             border: none;
             color: white;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
-            padding: 14px 30px;
+            padding: 12px 20px;
             margin: 8px 0;
             border-radius: 60px;
-            width: 240px;
+            width: 220px;
             text-align: center;
-            box-shadow: 0 8px 0 #151e2c;
+            box-shadow: 0 6px 0 #151e2c;
             cursor: pointer;
             transition: all 0.1s ease;
             animation: menuBtnPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
             text-shadow: 0 1px 0 rgba(0,0,0,0.3);
         }
-        .menu-btn:nth-child(2) { animation-delay: 100ms; }
-        .menu-btn:nth-child(3) { animation-delay: 200ms; }
-        .menu-btn:nth-child(4) { animation-delay: 300ms; }
+        .menu-btn:nth-child(3) { animation-delay: 100ms; } /* после moon и review */
+        .menu-btn:nth-child(4) { animation-delay: 200ms; }
+        .menu-btn:nth-child(5) { animation-delay: 300ms; }
         @keyframes menuBtnPop {
             0% { opacity: 0; transform: scale(0.6) translateY(30px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
         .menu-btn:active {
             transform: translateY(4px);
-            box-shadow: 0 4px 0 #151e2c;
+            box-shadow: 0 2px 0 #151e2c;
         }
         .menu-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 0 #151e2c;
+            box-shadow: 0 8px 0 #151e2c;
             filter: brightness(1.05);
         }
 
-        /* ========== COMMON ELEMENTS ========== */
+        /* ========== NAME MODAL ========== */
+        .mock-ad-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+        .name-modal {
+            background: #2a3150;
+            padding: 30px;
+            border-radius: 50px;
+            width: 280px;
+            text-align: center;
+        }
+        .name-modal h3 {
+            color: #ffecaa;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .name-modal input {
+            background: #1a1f35;
+            border: 2px solid #5f72af;
+            color: white;
+            font-size: 20px;
+            padding: 12px;
+            border-radius: 40px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .name-modal button {
+            background: #6d82d1;
+            border: none;
+            color: white;
+            font-size: 22px;
+            padding: 12px;
+            border-radius: 40px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        /* ========== Остальные стили (без изменений) ========== */
         .leaders-board, .shop-screen, .missions-screen {
             background: #222842;
             width: 100%;
@@ -206,7 +283,7 @@
             border-radius: 50px;
             margin-bottom: 8px;
             color: white;
-            font-size: 15px;
+            font-size: 14px;
         }
         .stat-item {
             display: flex;
@@ -214,22 +291,21 @@
             align-items: center;
         }
         .stat-label {
-            font-size: 10px;
+            font-size: 9px;
             color: #aab6e0;
         }
         .stat-value {
-            display: inline-block;
-            font-size: 18px;
+            font-size: 16px;
         }
         .pause-btn {
             background: #3d4a7a;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 20px;
             box-shadow: 0 4px 0 #1e2745;
             cursor: pointer;
             border: 2px solid #6f83b0;
@@ -248,11 +324,6 @@
             border-radius: 25px;
             background: #1a1f35;
             touch-action: none;
-            animation: canvasSubtleMove 8s ease infinite;
-        }
-        @keyframes canvasSubtleMove {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(2px); }
         }
 
         .joystick-area {
@@ -262,8 +333,8 @@
             margin-top: 10px;
         }
         .joystick-base {
-            width: 100px;
-            height: 100px;
+            width: 90px;
+            height: 90px;
             background: #3d4a7a;
             border-radius: 50%;
             display: flex;
@@ -279,8 +350,8 @@
             50% { transform: scale(1.06); }
         }
         .joystick-thumb {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             background: #6d82d1;
             border-radius: 50%;
             box-shadow: 0 3px 0 #35406b;
@@ -289,7 +360,7 @@
             border: 2px solid #a2b9ff;
         }
 
-        /* ========== GAME OVER (FULLSCREEN) ========== */
+        /* ========== GAME OVER ========== */
         #gameScreen.game-over .stats,
         #gameScreen.game-over .joystick-area {
             display: none !important;
@@ -630,69 +701,11 @@
             color: #4caf50;
             font-weight: bold;
         }
-
-        /* ========== NOTIFICATIONS ========== */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #2a3150;
-            border-left: 4px solid #4caf50;
-            padding: 12px 20px;
-            border-radius: 12px;
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 1500;
-            animation: notificationSlide 0.4s ease, notificationFloat 3s ease forwards;
-            font-size: 14px;
-        }
-        @keyframes notificationSlide {
-            from { transform: translateX(120%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes notificationFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        /* ========== NAME MODAL ========== */
-        .name-modal {
-            background: #2a3150;
-            padding: 30px;
-            border-radius: 50px;
-            width: 300px;
-            text-align: center;
-        }
-        .name-modal h3 {
-            color: #ffecaa;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .name-modal input {
-            background: #1a1f35;
-            border: 2px solid #5f72af;
-            color: white;
-            font-size: 20px;
-            padding: 12px;
-            border-radius: 40px;
-            width: 100%;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .name-modal button {
-            background: #6d82d1;
-            border: none;
-            color: white;
-            font-size: 22px;
-            padding: 12px;
-            border-radius: 40px;
-            width: 100%;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
-<div class="mock-ad-overlay hidden" id="nameOverlay" style="z-index: 1100;">
+<!-- МОДАЛЬНОЕ ОКНО С ИМЕНЕМ -->
+<div class="mock-ad-overlay hidden" id="nameOverlay">
     <div class="name-modal">
         <h3>YOUR NAME</h3>
         <input type="text" id="playerNameInput" maxlength="20" placeholder="Player" value="">
@@ -703,6 +716,14 @@
 <div class="game-wrapper">
     <div class="screen main-menu" id="menuScreen">
         <div class="moon-icon"></div>
+
+        <!-- БЛОК С ОТЗЫВАМИ НА 3 ЯЗЫКАХ -->
+        <div class="review-message">
+            <p class="lang-ru">⭐ Оставьте отзыв в Play Market – мы читаем их и улучшаем игру на основе ваших предложений!</p>
+            <p class="lang-en">⭐ Leave a review on Play Market – we read them and improve the game based on your feedback!</p>
+            <p class="lang-es">⭐ Deja una reseña en Play Market – las leemos y mejoramos el juego según tus sugerencias!</p>
+        </div>
+
         <button class="menu-btn" id="playBtn">PLAY</button>
         <button class="menu-btn" id="leadersBtn">LEADERBOARD</button>
         <button class="menu-btn" id="shopBtn">SHOP</button>
@@ -754,7 +775,7 @@
             </div>
         </div>
 
-        <!-- GAME OVER (outside canvas container) -->
+        <!-- GAME OVER -->
         <div class="reward-overlay hidden" id="rewardMenu">
             <div class="game-over-fullscreen">
                 <div class="game-over-content">
@@ -870,7 +891,7 @@
                 snapshot.forEach(child => {
                     leaders.push(child.val());
                 });
-                return leaders.reverse(); // от большего к меньшему
+                return leaders.reverse();
             } catch(e) {
                 console.error(e);
                 return [];
@@ -879,9 +900,8 @@
 
         async function addLeader(name, height, time) {
             if (!name || height <= 0) return;
-            if (!navigator.onLine) { showNotification("No internet – score not saved"); return; }
+            if (!navigator.onLine) return;
             try {
-                // Check if user already has a record
                 const snapshot = await db.ref('leaders').orderByChild('name').equalTo(name).once('value');
                 if (snapshot.exists()) {
                     let existingKey = null;
@@ -892,17 +912,14 @@
                     });
                     if (height > existingHeight) {
                         await db.ref(`leaders/${existingKey}`).set({ name, height, time: time.toFixed(1) });
-                        showNotification(`New record: ${height.toFixed(1)}m!`);
                     }
                 } else {
                     await db.ref('leaders').push({ name, height, time: time.toFixed(1) });
-                    showNotification(`Record saved: ${height.toFixed(1)}m!`);
                 }
                 renderLeaders();
                 await loadPersonalBest();
             } catch(e) {
                 console.error(e);
-                showNotification("Failed to save record");
             }
         }
 
@@ -933,7 +950,7 @@
             `).join('');
         }
 
-        // ========== MISSIONS (unchanged) ==========
+        // ========== MISSIONS (с сохранением) ==========
         let dailyMissions = [
             { id: 'height100', name: 'Reach 100 meters', goal: 100, progress: 0, reward: 25, completed: false, type: 'height' },
             { id: 'survive3min', name: 'Survive 3 minutes', goal: 180, progress: 0, reward: 50, completed: false, type: 'survive' },
@@ -957,7 +974,6 @@
                     totalMission.completed = true;
                     coins += totalMission.reward;
                     updateCoinsUI();
-                    showNotification(`Mission: ${totalMission.name} +${totalMission.reward} 🌟`);
                     saveMissions();
                 }
             }
@@ -981,7 +997,6 @@
                 mission.completed = true;
                 coins += mission.reward;
                 updateCoinsUI();
-                showNotification(`Mission: ${mission.name} +${mission.reward} 🌟`);
                 saveMissions();
                 renderMissions();
             }
@@ -1110,22 +1125,18 @@
         joystickBase.addEventListener('pointercancel', handleJoystickEnd);
         document.addEventListener('pointerup', handleJoystickEnd);
 
-        // ========== REVIVE (up to 5 times) ==========
+        // ========== REVIVE (до 5 раз) ==========
         let reviveCount = 0;
         const MAX_REVIVES = 5;
         function showRewardedAd() {
             return new Promise((resolve) => {
-                // In real app, integrate AdMob rewarded ad here using AD_UNIT_ID
-                showNotification("Ad (test) — revived! +5m jump, lava -2m");
+                // Здесь будет реальная реклама при публикации
                 resolve(true);
             });
         }
         async function revive() {
             if (!gameOver) return;
-            if (reviveCount >= MAX_REVIVES) {
-                showNotification(`Max revives (${MAX_REVIVES}) used!`);
-                return;
-            }
+            if (reviveCount >= MAX_REVIVES) return;
             const rewarded = await showRewardedAd();
             if (rewarded) {
                 reviveCount++;
@@ -1133,9 +1144,8 @@
                 gameOver = false;
                 ball.x = lastSafeX;
                 ball.y = lastSafeY;
-                ball.vy = -9.5;  // jump up ~5 meters
+                ball.vy = -9.5;
                 ball.vx = 0;
-                // Lava drops 2 meters down
                 lavaY += 2 * METER_TO_PX;
                 if (lavaY > START_PLATFORM_Y + 200) lavaY = START_PLATFORM_Y + 200;
                 if (!timerRunning) {
@@ -1144,15 +1154,12 @@
                 }
                 document.getElementById('rewardMenu').classList.add('hidden');
                 document.getElementById('gameScreen').classList.remove('game-over');
-                showNotification(`Revived! ${MAX_REVIVES - reviveCount} left. Jump boost!`);
                 const adBtn = document.getElementById('continueAdBtn');
                 if (reviveCount >= MAX_REVIVES) {
                     adBtn.disabled = true;
                     adBtn.style.opacity = '0.5';
                     adBtn.innerHTML = 'NO MORE REVIVES';
                 }
-            } else {
-                showNotification("Ad failed.");
             }
         }
 
@@ -1171,7 +1178,6 @@
             initPlatforms();
             gameTimer = 0;
             currentHeight = 0;
-            // maxHeight is already loaded from server, don't reset
             timerRunning = false;
             onGoldenPlatform = true;
             lastSafeX = 190;
@@ -1199,7 +1205,6 @@
             let touchedGolden = false;
 
             if (ball.vy > 0) {
-                // Start platform
                 if (ball.y + BALL_RADIUS >= goldenPlatform.y && ball.y - BALL_RADIUS < goldenPlatform.y + goldenPlatform.height &&
                     ball.x + BALL_RADIUS > goldenPlatform.x && ball.x - BALL_RADIUS < goldenPlatform.x + goldenPlatform.width) {
                     if (ball.y + BALL_RADIUS - ball.vy <= goldenPlatform.y + 5) {
@@ -1210,7 +1215,6 @@
                         if (navigator.vibrate) navigator.vibrate(50);
                     }
                 }
-                // Regular platforms
                 for (let i = platforms.length - 1; i >= 0; i--) {
                     let p = platforms[i];
                     if (p.active && ball.y + BALL_RADIUS > p.y && ball.y - BALL_RADIUS < p.y + p.height && ball.x + BALL_RADIUS > p.x && ball.x - BALL_RADIUS < p.x + p.width) {
@@ -1234,7 +1238,6 @@
             if (onGoldenPlatform && !touchedGolden) { onGoldenPlatform = false; if (!timerRunning) { timerRunning = true; lastTimestamp = performance.now(); } }
             else if (touchedGolden) { onGoldenPlatform = true; timerRunning = false; }
 
-            // LAVA (strict upward)
             let targetLavaY = ball.y + LAVA_GAP_METERS * METER_TO_PX;
             if (targetLavaY < lavaY) {
                 lavaY = targetLavaY;
@@ -1395,9 +1398,8 @@
                         unlockedSkins.push(id);
                         localStorage.setItem('unlockedSkins', JSON.stringify(unlockedSkins));
                         equipSkin(id);
-                        showNotification(`Bought ${skins.find(s=>s.id===id).name}!`);
                         renderShop();
-                    } else showNotification('Not enough coins!');
+                    }
                 };
             });
             document.querySelectorAll('.shop-btn.equip').forEach(btn => {
@@ -1411,14 +1413,6 @@
         function equipSkin(id) {
             currentSkinId = id;
             localStorage.setItem('currentSkin', id);
-            showNotification(`Equipped: ${skins.find(s=>s.id===id).name}`);
-        }
-        function showNotification(text) {
-            let notif = document.createElement('div');
-            notif.className = 'notification';
-            notif.innerText = text;
-            document.body.appendChild(notif);
-            setTimeout(() => notif.remove(), 2500);
         }
 
         // ========== UI NAVIGATION ==========
