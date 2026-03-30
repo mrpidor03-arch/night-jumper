@@ -33,12 +33,16 @@
         .hidden { display:none !important; }
 
         /* SPLASH SCREEN */
-        .splash-screen { position:fixed; top:0; left:0; width:100%; height:100%; background:radial-gradient(circle at 30% 20%,#0a0f1f,#03060c); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:20000; transition:opacity 0.8s; }
+        .splash-screen {
+            position:fixed; top:0; left:0; width:100%; height:100%; background:radial-gradient(circle at 30% 20%,#0a0f1f,#03060c);
+            display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:20000;
+            transition:opacity 0.5s;
+        }
         .splash-logo { font-size:36px; font-weight:800; letter-spacing:4px; background:linear-gradient(135deg,#f5e6b0,#d4af37); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 20px rgba(212,175,55,0.5); margin-bottom:30px; }
         .splash-moon { width:200px; height:200px; margin:20px auto; }
         .progress-container { width:240px; margin:30px auto 0; }
         .progress-bar { width:100%; height:6px; background:rgba(255,255,255,0.2); border-radius:3px; overflow:hidden; }
-        .progress-fill { width:0%; height:100%; background:#ffd966; border-radius:3px; transition:width 0.1s linear; }
+        .progress-fill { width:0%; height:100%; background:#ffd966; border-radius:3px; transition:width 0.2s linear; }
         .progress-text { text-align:center; margin-top:10px; font-size:14px; color:#ffd966; font-weight:bold; }
 
         /* MAIN MENU */
@@ -61,62 +65,19 @@
 
         /* SETTINGS MODAL (fullscreen) */
         .settings-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 20000;
+            position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9);
+            backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:20000;
         }
         .settings-content {
-            background: #2a3150;
-            padding: 30px;
-            border-radius: 50px;
-            width: 90%;
-            max-width: 320px;
-            max-height: 85vh;
-            overflow-y: auto;
-            text-align: center;
-            box-shadow: 0 20px 30px rgba(0,0,0,0.5);
+            background:#2a3150; padding:25px; border-radius:40px; width:90%; max-width:320px;
+            max-height:90%; overflow-y:auto; text-align:center; box-shadow:0 20px 30px rgba(0,0,0,0.5);
         }
-        .settings-content h3 { color: #ffecaa; margin-bottom: 20px; }
-        .settings-content label { display: block; margin: 15px 0 5px; color: white; }
-        .settings-content select, .settings-content input { width: 100%; padding: 8px; margin: 10px 0; border-radius: 20px; background: #1a1f35; color: white; border: 1px solid #5f72af; }
-        .settings-content button {
-            background: #6d82d1;
-            border: none;
-            color: white;
-            font-size: 20px;
-            padding: 10px;
-            border-radius: 40px;
-            width: 100%;
-            margin-top: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #35406b;
-            transition: 0.05s;
-        }
-        .settings-content button:active { transform: translateY(2px); box-shadow: 0 2px 0 #35406b; }
-        .settings-content .sensitivity-value { font-size: 20px; font-weight: bold; color: #ffd966; margin-left: 10px; }
-        .google-status {
-            background: #1e243f;
-            border-radius: 20px;
-            padding: 10px;
-            margin: 15px 0;
-            font-size: 14px;
-            color: #aaccff;
-        }
-        .google-signin-btn {
-            background: #4285F4;
-            margin-bottom: 5px;
-        }
-        .google-signout-btn {
-            background: #f44336;
-        }
+        .settings-content h3 { color:#ffecaa; margin-bottom:20px; }
+        .settings-content label { display:block; margin:15px 0 5px; color:white; }
+        .settings-content select, .settings-content input { width:100%; padding:8px; margin:10px 0; border-radius:20px; background:#1a1f35; color:white; border:1px solid #5f72af; }
+        .settings-content button { background:#6d82d1; border:none; color:white; font-size:18px; padding:10px; border-radius:40px; width:100%; margin-top:12px; cursor:pointer; box-shadow:0 3px 0 #35406b; transition:0.05s; }
+        .settings-content button:active { transform:translateY(2px); box-shadow:0 1px 0 #35406b; }
+        .divider { height:1px; background:#5f72af; margin:15px 0; }
 
         /* COMMON */
         .leaders-board, .shop-screen, .missions-screen { background:#222842; width:100%; color:#eee; }
@@ -142,7 +103,6 @@
         .joystick-area { width:100%; display:flex; justify-content:center; margin-top:10px; }
         .joystick-base { width:90px; height:90px; background:radial-gradient(circle at 30% 30%,#4a5b8c,#2e3a5c); border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 8px 15px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255,255,255,0.2); border:1px solid #6f83b0; touch-action:none; }
         .joystick-thumb { width:35px; height:35px; background:#6d82d1; border-radius:50%; box-shadow:0 3px 0 #35406b, inset 0 1px 2px rgba(255,255,255,0.5); transition:transform 0.02s; will-change:transform; border:1px solid #a2b9ff; }
-
         #gameScreen.game-over .stats, #gameScreen.game-over .joystick-area { display:none !important; }
         #gameScreen.game-over canvas { pointer-events:none; }
         .reward-overlay { position:absolute; top:0; left:0; width:100%; height:100%; z-index:10000; background:rgba(10,15,35,0.97); backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:center; border-radius:25px; animation:fadeInOverlay 0.4s forwards; }
@@ -183,13 +143,10 @@
         .shop-tabs { display:flex; gap:10px; margin:10px; }
         .shop-tab { background:#3d4a7a; padding:8px 20px; border-radius:40px; cursor:pointer; font-weight:bold; box-shadow:0 2px 4px rgba(0,0,0,0.3); transition:0.05s; }
         .shop-tab.active { background:#ffd966; color:#222; box-shadow:0 0 8px #ffd966; }
-        .shop-tab:active { transform:translateY(1px); }
         .shop-items { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:15px; width:100%; }
         .shop-item { background:#3d4a7a; border-radius:20px; padding:15px 10px; display:flex; flex-direction:column; align-items:center; border:2px solid #5c6fb1; transition:all 0.2s; box-shadow:0 4px 8px rgba(0,0,0,0.3); }
-        .shop-item:hover { transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,0,0,0.4); }
         .shop-item.equipped { border-color:#ffd966; box-shadow:0 0 15px rgba(255,217,102,0.4); background:#5a6bb0; }
-        .preview { width:40px; height:40px; border-radius:50%; margin-bottom:10px; box-shadow:0 0 10px rgba(255,255,255,0.5); cursor:pointer; transition:0.1s; }
-        .preview:active { transform:scale(0.95); }
+        .preview { width:40px; height:40px; border-radius:50%; margin-bottom:10px; box-shadow:0 0 10px rgba(255,255,255,0.5); cursor:pointer; }
         .rarity-badge { font-size:10px; background:#ffd966; color:#222; border-radius:20px; padding:2px 6px; margin-top:5px; }
         .shop-btn { background:#6d82d1; border:none; color:white; padding:8px 15px; border-radius:20px; font-weight:bold; cursor:pointer; margin-top:10px; width:100%; box-shadow:0 2px 4px rgba(0,0,0,0.3); transition:0.05s; }
         .shop-btn:active { transform:translateY(1px); box-shadow:0 1px 2px rgba(0,0,0,0.3); }
@@ -205,9 +162,7 @@
         .zoom-canvas { width:100%; background:#1a1f35; border-radius:20px; box-shadow:0 0 30px rgba(255,217,102,0.5); margin-bottom:20px; }
         .zoom-controls { display:flex; gap:20px; justify-content:center; margin-bottom:20px; }
         .zoom-controls button { background:#6d82d1; border:none; color:white; font-size:24px; width:50px; height:50px; border-radius:50%; cursor:pointer; box-shadow:0 4px 0 #35406b; transition:0.05s; }
-        .zoom-controls button:active { transform:translateY(2px); box-shadow:0 2px 0 #35406b; }
         .zoom-confirm { background:#4caf50; border:none; color:white; font-size:20px; padding:12px 30px; border-radius:50px; cursor:pointer; box-shadow:0 4px 0 #2e7d32; transition:0.05s; }
-        .zoom-confirm:active { transform:translateY(2px); box-shadow:0 2px 0 #2e7d32; }
 
         /* MISSIONS */
         .mission-item { display:flex; flex-direction:column; gap:6px; margin:8px 0; padding:10px; background:#2a3150; border-radius:20px; border-left:4px solid #ffd966; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
@@ -217,7 +172,7 @@
         .progress-bar { width:100%; height:8px; background:#1a1f35; border-radius:4px; overflow:hidden; margin:8px 0; }
         .progress-fill { height:100%; background:#ffd966; width:0%; transition:width 0.2s; }
         .mission-completed { color:#4caf50; font-weight:bold; }
-        .reset-timer { text-align:center; margin-top:15px; padding:8px; background:#1e243f; border-radius:40px; font-size:14px; color:#ffd966; box-shadow:inset 0 1px 2px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.2); }
+        .reset-timer { text-align:center; margin-top:15px; padding:8px; background:#1e243f; border-radius:40px; font-size:14px; color:#ffd966; }
     </style>
 </head>
 <body>
@@ -228,7 +183,7 @@
         <canvas id="splashMoonCanvas" class="splash-moon" width="200" height="200"></canvas>
         <div class="progress-container">
             <div class="progress-bar"><div id="splashProgressFill" class="progress-fill"></div></div>
-            <div id="splashProgressText" class="progress-text">0%</div>
+            <div id="splashProgressText" class="progress-text">Loading...</div>
         </div>
     </div>
 
@@ -268,10 +223,13 @@
 
 <script>
     (function() {
-        // Splash screen
+        // ---------- Splash screen with progress ----------
         const splashScreen = document.getElementById('splashScreen');
         const splashCtx = document.getElementById('splashMoonCanvas').getContext('2d');
-        const drawMoon = (ctx,w,h) => {
+        const splashProgressFill = document.getElementById('splashProgressFill');
+        const splashProgressText = document.getElementById('splashProgressText');
+
+        function drawMoon(ctx,w,h) {
             const cx=w/2, cy=h/2, r=w*0.45;
             const grad=ctx.createRadialGradient(cx-10,cy-8,5,cx,cy,r);
             grad.addColorStop(0,'#f9f3c1'); grad.addColorStop(0.5,'#e0c87a'); grad.addColorStop(1,'#b58b2e');
@@ -288,12 +246,8 @@
             ctx.shadowBlur=25; ctx.shadowColor='#ffd966';
             ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fillStyle='rgba(255,217,102,0.2)'; ctx.fill();
             ctx.shadowBlur=0;
-        };
+        }
         drawMoon(splashCtx,200,200);
-        let prog=0;
-        const splashInt=setInterval(()=>{ prog+=Math.random()*15+5; if(prog>=100){ prog=100; clearInterval(splashInt); splashScreen.style.opacity='0'; setTimeout(()=>{ splashScreen.style.display='none'; startGameCore(); },800); } splashProgressFill.style.width=prog+'%'; splashProgressText.innerText=Math.floor(prog)+'%'; },150);
-        const splashProgressFill=document.getElementById('splashProgressFill');
-        const splashProgressText=document.getElementById('splashProgressText');
 
         // Game settings
         let sensitivity = parseFloat(localStorage.getItem('sensitivity')) || 5;
@@ -325,18 +279,13 @@
         }
         function drawBall(ctx,x,y,r,skin) {
             if(skin.type==='custom' && skin.image){
-                const img=new Image();
-                img.src=skin.image;
+                const img=new Image(); img.src=skin.image;
                 if(img.complete){
                     ctx.save(); ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.clip();
                     ctx.drawImage(img,x-r,y-r,r*2,r*2);
                     ctx.restore();
-                } else {
-                    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill();
-                }
-            } else {
-                ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle=skin.color; ctx.fill();
-            }
+                } else { ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill(); }
+            } else { ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle=skin.color; ctx.fill(); }
             ctx.beginPath(); ctx.arc(x-2,y-2,3,0,Math.PI*2); ctx.fillStyle='#fffdeb'; ctx.fill();
         }
 
@@ -348,8 +297,7 @@
         let platforms=[], cameraY=0, gameActive=false, gameOver=false, paused=false, animationFrame=null, joystickX=0, joystickActive=false;
         let playerNick=null, playerUid=null, gameTimer=0, maxHeight=0, currentHeight=0, lastTimestamp=0, timerRunning=false, onGoldenPlatform=true, heightRecordTime=0;
         let lastSafeX=190, lastSafeY=START_PLATFORM_Y, deathHeight=0, lavaY=START_PLATFORM_Y+200;
-        let stars=[];
-        for(let i=0;i<200;i++) stars.push({x:20+Math.random()*(canvas.width-40), y:20+Math.random()*(canvas.height-40)});
+        let stars=[]; for(let i=0;i<200;i++) stars.push({x:20+Math.random()*(canvas.width-40), y:20+Math.random()*(canvas.height-40)});
         const goldenPlatform={x:120,y:START_PLATFORM_Y,width:PLATFORM_WIDTH,height:PLATFORM_HEIGHT};
         let globalPlatformCounter=0;
         let coins=parseInt(localStorage.getItem('playerCoins'));
@@ -405,95 +353,34 @@
         let lastResetTimestamp = localStorage.getItem('lastResetTimestamp');
         let totalDailyPlayTime = parseFloat(localStorage.getItem('totalDailyPlayTime')) || 0;
 
-        function saveMissions() {
-            localStorage.setItem('dailyMissions',JSON.stringify(dailyMissions));
-            localStorage.setItem('totalDailyPlayTime',totalDailyPlayTime);
-            localStorage.setItem('bonusMission',JSON.stringify(bonusMission));
-        }
-        function loadMissions() {
-            let saved=localStorage.getItem('dailyMissions');
-            if(saved) dailyMissions=JSON.parse(saved);
-            totalDailyPlayTime=parseFloat(localStorage.getItem('totalDailyPlayTime'))||0;
-            let savedBonus=localStorage.getItem('bonusMission');
-            if(savedBonus) bonusMission=JSON.parse(savedBonus);
-            updateBonusMission();
-        }
-        function updateBonusMission(){
-            const allCompleted=dailyMissions.every(m=>m.completed===true);
-            if(allCompleted && !bonusMission.completed){
-                bonusMission.completed=true;
-                coins+=bonusMission.reward; updateCoinsUI();
-                saveMissions(); renderMissions();
-            } else if(!allCompleted && bonusMission.completed){
-                bonusMission.completed=false;
-                saveMissions();
-            }
-        }
+        function saveMissions() { localStorage.setItem('dailyMissions',JSON.stringify(dailyMissions)); localStorage.setItem('totalDailyPlayTime',totalDailyPlayTime); localStorage.setItem('bonusMission',JSON.stringify(bonusMission)); }
+        function loadMissions() { let saved=localStorage.getItem('dailyMissions'); if(saved) dailyMissions=JSON.parse(saved); totalDailyPlayTime=parseFloat(localStorage.getItem('totalDailyPlayTime'))||0; let savedBonus=localStorage.getItem('bonusMission'); if(savedBonus) bonusMission=JSON.parse(savedBonus); updateBonusMission(); }
+        function updateBonusMission(){ const allCompleted=dailyMissions.every(m=>m.completed===true); if(allCompleted && !bonusMission.completed){ bonusMission.completed=true; coins+=bonusMission.reward; updateCoinsUI(); saveMissions(); renderMissions(); } else if(!allCompleted && bonusMission.completed){ bonusMission.completed=false; saveMissions(); } }
         function checkDailyReset(){
-            const now=Date.now();
-            const last=parseInt(lastResetTimestamp);
+            const now=Date.now(); const last=parseInt(lastResetTimestamp);
             if(isNaN(last) || (now-last)>=24*60*60*1000){
-                dailyMissions.forEach(m=>{ m.progress=0; m.completed=false; });
-                bonusMission.completed=false;
-                totalDailyPlayTime=0;
-                adWatchCountToday=0; saveAdCounter();
-                localStorage.setItem('lastResetTimestamp',now.toString());
-                lastResetTimestamp=now.toString();
-                saveMissions();
-                renderMissions();
+                dailyMissions.forEach(m=>{ m.progress=0; m.completed=false; }); bonusMission.completed=false; totalDailyPlayTime=0; adWatchCountToday=0; saveAdCounter();
+                localStorage.setItem('lastResetTimestamp',now.toString()); lastResetTimestamp=now.toString(); saveMissions(); renderMissions();
             } else { loadMissions(); loadAdCounter(); }
         }
-        function checkMissionComplete(mission){
-            if(!mission.completed && mission.progress>=mission.goal){
-                mission.completed=true;
-                coins+=mission.reward; updateCoinsUI();
-                saveMissions(); renderMissions();
-                updateBonusMission();
-            }
-        }
+        function checkMissionComplete(mission){ if(!mission.completed && mission.progress>=mission.goal){ mission.completed=true; coins+=mission.reward; updateCoinsUI(); saveMissions(); renderMissions(); updateBonusMission(); } }
         function updateMissionsHeight(h){ let m=dailyMissions.find(m=>m.id==='height100'); if(!m.completed && h>m.progress){ m.progress=Math.min(h,m.goal); checkMissionComplete(m); saveMissions(); renderMissions(); } }
         function updateMissionsSurvive(t){ let m=dailyMissions.find(m=>m.id==='survive3min'); if(!m.completed && t>m.progress){ m.progress=Math.min(t,m.goal); checkMissionComplete(m); saveMissions(); renderMissions(); } }
         function updateMissionsTotalTime(delta){
             let m=dailyMissions.find(m=>m.id==='play20min');
-            if(!m.completed){
-                totalDailyPlayTime+=delta;
-                if(totalDailyPlayTime>m.goal) totalDailyPlayTime=m.goal;
-                m.progress=totalDailyPlayTime;
-                checkMissionComplete(m);
-                localStorage.setItem('totalDailyPlayTime',totalDailyPlayTime);
-                saveMissions(); renderMissions();
-            }
+            if(!m.completed){ totalDailyPlayTime+=delta; if(totalDailyPlayTime>m.goal) totalDailyPlayTime=m.goal; m.progress=totalDailyPlayTime; checkMissionComplete(m); localStorage.setItem('totalDailyPlayTime',totalDailyPlayTime); saveMissions(); renderMissions(); }
         }
-        function updateMissionAdsWatched(count){
-            let m=dailyMissions.find(m=>m.id==='watchAds5');
-            if(!m.completed){ m.progress=Math.min(m.progress+count,m.goal); checkMissionComplete(m); saveMissions(); renderMissions(); }
-        }
+        function updateMissionAdsWatched(count){ let m=dailyMissions.find(m=>m.id==='watchAds5'); if(!m.completed){ m.progress=Math.min(m.progress+count,m.goal); checkMissionComplete(m); saveMissions(); renderMissions(); } }
         let lastTotalTimeUpdate=performance.now()/1000;
-        function updateDailyMissions(){
-            if(!gameActive || gameOver || paused) return;
-            let now=performance.now()/1000;
-            let delta=now-lastTotalTimeUpdate;
-            if(delta>0.5){
-                updateMissionsSurvive(gameTimer);
-                updateMissionsTotalTime(delta);
-                lastTotalTimeUpdate=now;
-            }
-            updateMissionsHeight(currentHeight);
-        }
+        function updateDailyMissions(){ if(!gameActive || gameOver || paused) return; let now=performance.now()/1000; let delta=now-lastTotalTimeUpdate; if(delta>0.5){ updateMissionsSurvive(gameTimer); updateMissionsTotalTime(delta); lastTotalTimeUpdate=now; } updateMissionsHeight(currentHeight); }
         function formatTime(sec){ let m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m}:${s.toString().padStart(2,'0')}`; }
         function updateResetTimerDisplay(){
-            const now=Date.now();
-            const last=parseInt(localStorage.getItem('lastResetTimestamp'))||now;
-            const elapsed=now-last;
-            const remaining=Math.max(0,24*60*60*1000-elapsed);
-            const h=Math.floor(remaining/(60*60*1000));
-            const m=Math.floor((remaining%(60*60*1000))/(60*1000));
-            const s=Math.floor((remaining%(60*1000))/1000);
+            const now=Date.now(); const last=parseInt(localStorage.getItem('lastResetTimestamp'))||now; const elapsed=now-last; const remaining=Math.max(0,24*60*60*1000-elapsed);
+            const h=Math.floor(remaining/(60*60*1000)); const m=Math.floor((remaining%(60*60*1000))/(60*1000)); const s=Math.floor((remaining%(60*1000))/1000);
             document.getElementById('resetTimerDisplay').innerText=`Reset in: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
         function renderMissions(){
-            const container=document.getElementById('missionsList');
-            container.innerHTML='';
+            const container=document.getElementById('missionsList'); container.innerHTML='';
             dailyMissions.forEach(m=>{
                 const div=document.createElement('div'); div.className='mission-item';
                 let percent=(m.progress/m.goal)*100;
@@ -511,8 +398,7 @@
 
         // Platforms
         function initPlatforms(){
-            platforms=[];
-            let y=START_PLATFORM_Y-PLATFORM_DIST;
+            platforms=[]; let y=START_PLATFORM_Y-PLATFORM_DIST;
             for(let i=0;i<15;i++){
                 let newX=30+Math.random()*(canvas.width-PLATFORM_WIDTH-60);
                 let speed=(Math.random()*0.5+0.2)*(1+i*0.005);
@@ -559,14 +445,9 @@
         joystickBase.addEventListener('pointercancel',handleJoystickEnd);
         document.addEventListener('pointerup',handleJoystickEnd);
 
-        // Auth and leaderboard
+        // Leaderboard
         async function fetchLeaders(){
-            try{
-                const snap=await db.ref('leaders').orderByChild('height').limitToLast(100).once('value');
-                const leaders=[];
-                snap.forEach(c=>leaders.push(c.val()));
-                return leaders.reverse();
-            } catch(e){ return []; }
+            try{ const snap=await db.ref('leaders').orderByChild('height').limitToLast(100).once('value'); const leaders=[]; snap.forEach(c=>leaders.push(c.val())); return leaders.reverse(); } catch(e){ return []; }
         }
         async function addLeader(uid,nickname,height,time){
             if(!uid || height<=0) return;
@@ -586,8 +467,7 @@
             if(data && data.height>maxHeight){ maxHeight=data.height; document.getElementById('maxHeightDisplay').innerText=maxHeight.toFixed(1); }
         }
         async function renderLeaders(){
-            const list=document.getElementById('leaderList');
-            list.innerHTML='<div class="leader-item">Loading...</div>';
+            const list=document.getElementById('leaderList'); list.innerHTML='<div class="leader-item">Loading...</div>';
             const leaders=await fetchLeaders();
             if(!leaders.length){ list.innerHTML='<div class="leader-item">No records yet</div>'; return; }
             list.innerHTML=leaders.slice(0,100).map((l,i)=>`<div class="leader-item ${l.uid===playerUid?'current-user':''}"><span>${i+1}. ${l.nickname} <span style="font-size:10px; color:#aaccff;">${l.uid.slice(-8)}</span></span><span>${l.height.toFixed(1)}m</span><span>${l.time}s</span></div>`).join('');
@@ -677,6 +557,7 @@
                 lastTimestamp=now;
             }
         }
+
         function draw(){
             ctx.clearRect(0,0,canvas.width,canvas.height);
             let grad=ctx.createLinearGradient(0,0,0,canvas.height);
@@ -724,7 +605,7 @@
             document.getElementById('coinsDisplay').innerText=Math.floor(coins);
         }
 
-        // Shop with zoom (custom skin price = 100)
+        // Shop with zoom (custom skin price = 3000)
         function openZoomModal(imgBase64){
             return new Promise((resolve)=>{
                 const modal=document.createElement('div'); modal.className='zoom-modal';
@@ -777,7 +658,7 @@
                 itemsDiv.appendChild(div);
             });
             const customDiv=document.createElement('div'); customDiv.className='shop-item'+(isCustomSkinActive?' equipped':'');
-            customDiv.innerHTML=`<div class="preview" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);"></div><div>Custom Skin</div><div class="rarity-badge">Legendary</div><button class="shop-btn shop-btn-custom" id="customSkinBtn">${isCustomSkinActive?'Change Custom (100 🌟)':'Buy Custom (100 🌟)'}</button>`;
+            customDiv.innerHTML=`<div class="preview" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);"></div><div>Custom Skin</div><div class="rarity-badge">Legendary</div><button class="shop-btn shop-btn-custom" id="customSkinBtn">${isCustomSkinActive?'Change Custom (3000 🌟)':'Buy Custom (3000 🌟)'}</button>`;
             itemsDiv.appendChild(customDiv);
             const adDiv=document.createElement('div'); adDiv.className='shop-item';
             adDiv.innerHTML=`<div class="preview" style="background:linear-gradient(135deg,#ffa500,#ff8c00);"></div><div>+10 Coins</div><div class="rarity-badge">Daily (${5-adWatchCountToday} left)</div><button class="shop-btn shop-btn-ad" id="adCoinBtn">Watch Ad (+10🌟)</button>`;
@@ -803,8 +684,8 @@
             const customBtn=document.getElementById('customSkinBtn');
             if(customBtn){
                 customBtn.onclick=async()=>{
-                    if(coins>=100){
-                        coins-=100; updateCoinsUI();
+                    if(coins>=3000){
+                        coins-=3000; updateCoinsUI();
                         const input=document.createElement('input'); input.type='file'; input.accept='image/*';
                         input.onchange=async(e)=>{
                             const file=e.target.files[0];
@@ -824,7 +705,7 @@
                             }
                         };
                         input.click();
-                    } else alert('Not enough coins! Need 100🌟');
+                    } else alert('Not enough coins! Need 3000🌟');
                 };
             }
             const adCoinBtn=document.getElementById('adCoinBtn');
@@ -883,65 +764,29 @@
             });
         }
 
+        // Settings (without Google)
         function openSettings(){
             const modal=document.createElement('div'); modal.className='settings-modal';
-            modal.innerHTML=`<div class="settings-content"><h3>⚙️ SETTINGS</h3><label>Sensitivity (1–10)</label><input type="range" id="sensitivitySlider" min="1" max="10" step="0.5" value="${sensitivity}"><div>Current: <span id="sensitivityValue" class="sensitivity-value">${sensitivity}</span></div><label>Max FPS</label><select id="fpsSelect"><option value="60">60</option><option value="90">90</option><option value="120">120</option></select><button id="closeSettings">OK</button></div>`;
+            const content=document.createElement('div'); content.className='settings-content';
+            content.innerHTML=`
+                <h3>⚙️ SETTINGS</h3>
+                <label>Sensitivity (1–10)</label>
+                <input type="range" id="sensitivitySlider" min="1" max="10" step="0.5" value="${sensitivity}">
+                <div>Current: <span id="sensitivityValue" class="sensitivity-value">${sensitivity}</span></div>
+                <label>Max FPS</label>
+                <select id="fpsSelect"><option value="60">60</option><option value="90">90</option><option value="120">120</option></select>
+                <div class="divider"></div>
+                <button id="closeSettings">OK</button>
+            `;
+            modal.appendChild(content);
             document.body.appendChild(modal);
-            const slider=document.getElementById('sensitivitySlider'), fpsSelect=document.getElementById('fpsSelect'), valSpan=document.getElementById('sensitivityValue');
+
+            const slider=document.getElementById('sensitivitySlider');
+            const fpsSelect=document.getElementById('fpsSelect');
+            const valSpan=document.getElementById('sensitivityValue');
             fpsSelect.value=targetFPS;
             slider.oninput=()=>{ const v=parseFloat(slider.value); valSpan.innerText=v; saveSensitivity(v); };
             fpsSelect.onchange=()=>{ saveFPS(parseInt(fpsSelect.value)); };
-            
-            // Google sign-in section
-            const settingsContent = modal.querySelector('.settings-content');
-            const statusDiv = document.createElement('div');
-            statusDiv.className = 'google-status';
-            const updateGoogleStatus = () => {
-                const user = auth.currentUser;
-                if (user && user.providerData.some(p => p.providerId === 'google.com')) {
-                    statusDiv.innerHTML = `✅ Connected as ${user.email || user.displayName || user.uid}<br>Your progress is saved to this Google account. You can play on other devices after signing in.`;
-                    // Если уже есть кнопка входа, заменим на кнопку выхода
-                    const oldSignin = settingsContent.querySelector('.google-signin-btn');
-                    if (oldSignin) oldSignin.remove();
-                    const signoutBtn = document.createElement('button');
-                    signoutBtn.innerText = 'Sign out from Google';
-                    signoutBtn.className = 'google-signout-btn';
-                    signoutBtn.onclick = async () => {
-                        try {
-                            await auth.signOut();
-                            // После выхода нужно снова зайти анонимно
-                            await auth.signInAnonymously();
-                            location.reload(); // перезагрузим для обновления UID
-                        } catch(e) { alert(e.message); }
-                    };
-                    settingsContent.appendChild(signoutBtn);
-                } else {
-                    statusDiv.innerHTML = `⚠️ Not connected to Google.<br>Connect your Google account to save your progress across devices.`;
-                    const signinBtn = document.createElement('button');
-                    signinBtn.innerText = 'Sign in with Google';
-                    signinBtn.className = 'google-signin-btn';
-                    signinBtn.onclick = async () => {
-                        const provider = new firebase.auth.GoogleAuthProvider();
-                        try {
-                            const result = await auth.signInWithPopup(provider);
-                            playerUid = result.user.uid;
-                            playerNick = result.user.displayName || playerNick;
-                            localStorage.setItem('playerNick', playerNick);
-                            document.getElementById('profileNickname').innerText = playerNick;
-                            document.getElementById('profileId').innerText = playerUid.slice(-8);
-                            document.getElementById('profileBlock').style.display = 'block';
-                            if (maxHeight > 0) addLeader(playerUid, playerNick, maxHeight, gameTimer);
-                            modal.remove(); // закрыть настройки после входа
-                            // Перезагрузим настройки (откроем снова, если нужно)
-                        } catch (error) {
-                            alert('Google sign-in failed: ' + error.message);
-                        }
-                    };
-                    settingsContent.appendChild(signinBtn);
-                }
-            };
-            updateGoogleStatus();
-            settingsContent.insertBefore(statusDiv, settingsContent.querySelector('#closeSettings'));
             document.getElementById('closeSettings').onclick = () => modal.remove();
         }
         document.getElementById('settingsBtn').addEventListener('click', openSettings);
@@ -966,7 +811,6 @@
                             document.getElementById('profileNickname').innerText=playerNick;
                             document.getElementById('profileId').innerText=playerUid.slice(-8);
                             document.getElementById('profileBlock').style.display='block';
-                            resolve();
                         } else {
                             const modal=document.createElement('div'); modal.className='settings-modal';
                             modal.innerHTML=`<div class="settings-content"><h3>ENTER YOUR NAME</h3><input type="text" id="nickInput" maxlength="10" placeholder="Nickname (max 10)"><button id="saveNickBtn">START</button><div id="nickError" style="display:none; color:#f88;"></div></div>`;
@@ -974,19 +818,23 @@
                             const input=modal.querySelector('#nickInput');
                             const saveBtn=modal.querySelector('#saveNickBtn');
                             const errorDiv=modal.querySelector('#nickError');
-                            saveBtn.onclick=()=>{
-                                let nick=input.value.trim();
-                                if(nick==='') nick='Player';
-                                if(nick.length>10){ errorDiv.style.display='block'; errorDiv.innerText='Max 10 characters!'; return; }
-                                playerNick=nick;
-                                localStorage.setItem('playerNick',playerNick);
-                                document.getElementById('profileNickname').innerText=playerNick;
-                                document.getElementById('profileId').innerText=playerUid.slice(-8);
-                                document.getElementById('profileBlock').style.display='block';
-                                modal.remove();
-                                resolve();
-                            };
+                            await new Promise(resolveNick=>{
+                                saveBtn.onclick=()=>{
+                                    let nick=input.value.trim();
+                                    if(nick==='') nick='Player';
+                                    if(nick.length>10){ errorDiv.style.display='block'; errorDiv.innerText='Max 10 characters!'; return; }
+                                    playerNick=nick;
+                                    localStorage.setItem('playerNick',playerNick);
+                                    document.getElementById('profileNickname').innerText=playerNick;
+                                    document.getElementById('profileId').innerText=playerUid.slice(-8);
+                                    document.getElementById('profileBlock').style.display='block';
+                                    modal.remove();
+                                    resolveNick();
+                                };
+                            });
                         }
+                        await loadPersonalBest();
+                        resolve();
                     } else {
                         auth.signInAnonymously().catch(reject);
                     }
@@ -995,8 +843,20 @@
             checkDailyReset();
             showMenu();
             setInterval(()=>{ if(!missionsScreen.classList.contains('hidden')) updateResetTimerDisplay(); },1000);
+            splashScreen.style.opacity='0';
+            setTimeout(()=>{ splashScreen.style.display='none'; },500);
         }
-        startGameCore();
+        let fakeProgress=0;
+        const fakeInterval=setInterval(()=>{
+            fakeProgress=Math.min(95, fakeProgress+Math.random()*10);
+            splashProgressFill.style.width=fakeProgress+'%';
+            splashProgressText.innerText=Math.floor(fakeProgress)+'%';
+        },200);
+        startGameCore().finally(()=>{
+            clearInterval(fakeInterval);
+            splashProgressFill.style.width='100%';
+            splashProgressText.innerText='100%';
+        });
     })();
 </script>
 </body>
