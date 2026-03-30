@@ -59,15 +59,64 @@
         .menu-btn { background:linear-gradient(135deg,#4a5b8c,#2e3a5c); border:none; color:white; font-size:20px; font-weight:bold; padding:12px 20px; margin:8px 0; border-radius:60px; width:220px; text-align:center; box-shadow:0 6px 0 #151e2c; cursor:pointer; transition:0.05s; text-shadow:0 1px 0 rgba(0,0,0,0.3); }
         .menu-btn:active { transform:translateY(4px); box-shadow:0 2px 0 #151e2c; }
 
-        /* SETTINGS MODAL */
-        .settings-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); display:flex; align-items:center; justify-content:center; z-index:20000; }
-        .settings-content { background:#2a3150; padding:30px; border-radius:50px; width:280px; text-align:center; box-shadow:0 20px 30px rgba(0,0,0,0.5); }
-        .settings-content h3 { color:#ffecaa; margin-bottom:20px; }
-        .settings-content label { display:block; margin:15px 0 5px; color:white; }
-        .settings-content select, .settings-content input { width:100%; padding:8px; margin:10px 0; border-radius:20px; background:#1a1f35; color:white; border:1px solid #5f72af; }
-        .settings-content button { background:#6d82d1; border:none; color:white; font-size:20px; padding:10px; border-radius:40px; width:100%; margin-top:15px; cursor:pointer; box-shadow:0 4px 0 #35406b; transition:0.05s; }
-        .settings-content button:active { transform:translateY(2px); box-shadow:0 2px 0 #35406b; }
-        .settings-content .sensitivity-value { font-size:20px; font-weight:bold; color:#ffd966; margin-left:10px; }
+        /* SETTINGS MODAL (fullscreen) */
+        .settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+        }
+        .settings-content {
+            background: #2a3150;
+            padding: 30px;
+            border-radius: 50px;
+            width: 90%;
+            max-width: 320px;
+            max-height: 85vh;
+            overflow-y: auto;
+            text-align: center;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.5);
+        }
+        .settings-content h3 { color: #ffecaa; margin-bottom: 20px; }
+        .settings-content label { display: block; margin: 15px 0 5px; color: white; }
+        .settings-content select, .settings-content input { width: 100%; padding: 8px; margin: 10px 0; border-radius: 20px; background: #1a1f35; color: white; border: 1px solid #5f72af; }
+        .settings-content button {
+            background: #6d82d1;
+            border: none;
+            color: white;
+            font-size: 20px;
+            padding: 10px;
+            border-radius: 40px;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #35406b;
+            transition: 0.05s;
+        }
+        .settings-content button:active { transform: translateY(2px); box-shadow: 0 2px 0 #35406b; }
+        .settings-content .sensitivity-value { font-size: 20px; font-weight: bold; color: #ffd966; margin-left: 10px; }
+        .google-status {
+            background: #1e243f;
+            border-radius: 20px;
+            padding: 10px;
+            margin: 15px 0;
+            font-size: 14px;
+            color: #aaccff;
+        }
+        .google-signin-btn {
+            background: #4285F4;
+            margin-bottom: 5px;
+        }
+        .google-signout-btn {
+            background: #f44336;
+        }
 
         /* COMMON */
         .leaders-board, .shop-screen, .missions-screen { background:#222842; width:100%; color:#eee; }
@@ -675,7 +724,7 @@
             document.getElementById('coinsDisplay').innerText=Math.floor(coins);
         }
 
-        // Shop with zoom (custom skin price = 100 for test)
+        // Shop with zoom (custom skin price = 100)
         function openZoomModal(imgBase64){
             return new Promise((resolve)=>{
                 const modal=document.createElement('div'); modal.className='zoom-modal';
@@ -842,28 +891,57 @@
             fpsSelect.value=targetFPS;
             slider.oninput=()=>{ const v=parseFloat(slider.value); valSpan.innerText=v; saveSensitivity(v); };
             fpsSelect.onchange=()=>{ saveFPS(parseInt(fpsSelect.value)); };
-            // Google sign-in button
-            const googleBtn = document.createElement('button');
-            googleBtn.innerText = 'Sign in with Google';
-            googleBtn.style.marginTop = '15px';
-            googleBtn.style.background = '#4285F4';
-            googleBtn.onclick = async () => {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                try {
-                    const result = await auth.signInWithPopup(provider);
-                    playerUid = result.user.uid;
-                    playerNick = result.user.displayName || playerNick;
-                    localStorage.setItem('playerNick', playerNick);
-                    document.getElementById('profileNickname').innerText = playerNick;
-                    document.getElementById('profileId').innerText = playerUid.slice(-8);
-                    document.getElementById('profileBlock').style.display = 'block';
-                    modal.remove();
-                    if (maxHeight > 0) addLeader(playerUid, playerNick, maxHeight, gameTimer);
-                } catch (error) {
-                    alert('Google sign-in failed: ' + error.message);
+            
+            // Google sign-in section
+            const settingsContent = modal.querySelector('.settings-content');
+            const statusDiv = document.createElement('div');
+            statusDiv.className = 'google-status';
+            const updateGoogleStatus = () => {
+                const user = auth.currentUser;
+                if (user && user.providerData.some(p => p.providerId === 'google.com')) {
+                    statusDiv.innerHTML = `✅ Connected as ${user.email || user.displayName || user.uid}<br>Your progress is saved to this Google account. You can play on other devices after signing in.`;
+                    // Если уже есть кнопка входа, заменим на кнопку выхода
+                    const oldSignin = settingsContent.querySelector('.google-signin-btn');
+                    if (oldSignin) oldSignin.remove();
+                    const signoutBtn = document.createElement('button');
+                    signoutBtn.innerText = 'Sign out from Google';
+                    signoutBtn.className = 'google-signout-btn';
+                    signoutBtn.onclick = async () => {
+                        try {
+                            await auth.signOut();
+                            // После выхода нужно снова зайти анонимно
+                            await auth.signInAnonymously();
+                            location.reload(); // перезагрузим для обновления UID
+                        } catch(e) { alert(e.message); }
+                    };
+                    settingsContent.appendChild(signoutBtn);
+                } else {
+                    statusDiv.innerHTML = `⚠️ Not connected to Google.<br>Connect your Google account to save your progress across devices.`;
+                    const signinBtn = document.createElement('button');
+                    signinBtn.innerText = 'Sign in with Google';
+                    signinBtn.className = 'google-signin-btn';
+                    signinBtn.onclick = async () => {
+                        const provider = new firebase.auth.GoogleAuthProvider();
+                        try {
+                            const result = await auth.signInWithPopup(provider);
+                            playerUid = result.user.uid;
+                            playerNick = result.user.displayName || playerNick;
+                            localStorage.setItem('playerNick', playerNick);
+                            document.getElementById('profileNickname').innerText = playerNick;
+                            document.getElementById('profileId').innerText = playerUid.slice(-8);
+                            document.getElementById('profileBlock').style.display = 'block';
+                            if (maxHeight > 0) addLeader(playerUid, playerNick, maxHeight, gameTimer);
+                            modal.remove(); // закрыть настройки после входа
+                            // Перезагрузим настройки (откроем снова, если нужно)
+                        } catch (error) {
+                            alert('Google sign-in failed: ' + error.message);
+                        }
+                    };
+                    settingsContent.appendChild(signinBtn);
                 }
             };
-            modal.querySelector('.settings-content').appendChild(googleBtn);
+            updateGoogleStatus();
+            settingsContent.insertBefore(statusDiv, settingsContent.querySelector('#closeSettings'));
             document.getElementById('closeSettings').onclick = () => modal.remove();
         }
         document.getElementById('settingsBtn').addEventListener('click', openSettings);
