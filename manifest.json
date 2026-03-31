@@ -1,6 +1,6 @@
 {
-  "name": "Night Jumper · Lava Chase",
-  "short_name": "Night Jumper",
+  "name": "Night Jumper",
+  "short_name": "Jumper",
   "start_url": "index.html",
   "display": "fullscreen",
   "background_color": "#1a1f35",
