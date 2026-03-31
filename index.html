@@ -62,6 +62,63 @@
         }
         .hidden { display: none !important; }
 
+        /* ========== КРАСИВЫЙ СПЛЭШ ========== */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 20%, #0a0f1f, #03060c);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            transition: opacity 0.8s ease;
+        }
+        .splash-logo {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #f5e6b0, #d4af37);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(212,175,55,0.5);
+            margin-bottom: 30px;
+        }
+        .splash-moon {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+        }
+        .progress-container {
+            width: 240px;
+            margin: 30px auto 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #ffd966;
+            border-radius: 3px;
+            transition: width 0.2s linear;
+        }
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #ffd966;
+            font-weight: bold;
+        }
+
         /* ========== MAIN MENU ========== */
         .main-menu {
             background: linear-gradient(145deg, #2a3150, #1a1f35);
@@ -389,23 +446,21 @@
 </head>
 <body>
 <div class="game-wrapper">
+    <!-- СПЛЭШ -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-logo">VELTA STUDIO</div>
+        <canvas id="splashMoonCanvas" class="splash-moon" width="200" height="200"></canvas>
+        <div class="progress-container">
+            <div class="progress-bar"><div id="splashProgressFill" class="progress-fill"></div></div>
+            <div id="splashProgressText" class="progress-text">Loading...</div>
+        </div>
+    </div>
+
     <div class="screen main-menu" id="menuScreen">
-        <div class="top-bar">
-            <button class="settings-btn" id="settingsBtn">⚙️</button>
-        </div>
+        <div class="top-bar"><button class="settings-btn" id="settingsBtn">⚙️</button></div>
         <div class="moon-icon"></div>
-        <div id="profileBlock" class="profile-card" style="display: none;">
-            <div class="nickname" id="profileNickname"></div>
-            <div class="id-row">
-                <span class="player-id" id="profileId"></span>
-                <button id="copyIdBtn" class="copy-id">📋 Copy</button>
-            </div>
-        </div>
-        <div class="review-message">
-            <p class="lang-ru">⭐ Оставьте отзыв в Play Market – мы читаем их и улучшаем игру на основе ваших предложений!</p>
-            <p class="lang-en">⭐ Leave a review on Play Market – we read them and improve the game based on your feedback!</p>
-            <p class="lang-es">⭐ Deja una reseña en Play Market – las leemos y mejoramos el juego según tus sugerencias!</p>
-        </div>
+        <div id="profileBlock" class="profile-card" style="display: none;"><div class="nickname" id="profileNickname"></div><div class="id-row"><span class="player-id" id="profileId"></span><button id="copyIdBtn" class="copy-id">📋 Copy</button></div></div>
+        <div class="review-message"><p class="lang-ru">⭐ Оставьте отзыв в Play Market – мы читаем их и улучшаем игру на основе ваших предложений!</p><p class="lang-en">⭐ Leave a review on Play Market – we read them and improve the game based on your feedback!</p><p class="lang-es">⭐ Deja una reseña en Play Market – las leemos y mejoramos el juego según tus sugerencias!</p></div>
         <button class="menu-btn" id="playBtn">PLAY</button>
         <button class="menu-btn" id="leadersBtn">LEADERBOARD</button>
         <button class="menu-btn" id="shopBtn">SHOP</button>
@@ -426,9 +481,7 @@
         </div>
         <div class="canvas-container">
             <canvas id="gameCanvas" width="380" height="550"></canvas>
-            <div class="pause-overlay hidden" id="pauseMenu">
-                <div class="pause-menu"><h2>PAUSED</h2><div class="pause-stats"><div>🏆 CURRENT HEIGHT</div><div class="height-value" id="pauseHeight">0.0m</div></div><button class="pause-btn-menu pause-resume" id="resumeBtn">▶ RESUME</button><button class="pause-btn-menu pause-quit" id="finishGameBtn">⏹ FINISH GAME</button></div>
-            </div>
+            <div class="pause-overlay hidden" id="pauseMenu"><div class="pause-menu"><h2>PAUSED</h2><div class="pause-stats"><div>🏆 CURRENT HEIGHT</div><div class="height-value" id="pauseHeight">0.0m</div></div><button class="pause-btn-menu pause-resume" id="resumeBtn">▶ RESUME</button><button class="pause-btn-menu pause-quit" id="finishGameBtn">⏹ FINISH GAME</button></div></div>
         </div>
         <div class="reward-overlay hidden" id="rewardMenu">
             <div class="game-over-fullscreen"><div class="game-over-content"><h1 class="game-over-title">GAME OVER</h1><div class="height-result"><span class="label">YOUR HEIGHT</span><span class="value" id="deathHeightDisplay">0.0m</span></div><div id="biomeBonusDisplay" class="bonus-text"></div><div class="game-over-buttons"><button class="go-btn go-btn-ad" id="continueAdBtn"><span class="btn-icon">📺</span> CONTINUE WITH AD</button><button class="go-btn go-btn-restart" id="restartAfterDeathBtn">RESTART</button><button class="go-btn go-btn-menu" id="menuAfterDeathBtn">MAIN MENU</button></div></div></div>
@@ -439,214 +492,160 @@
 
 <script>
     (function() {
+        // ========== ДЕТАЛЬНАЯ ЛУНА ДЛЯ СПЛЭША ==========
+        const splashScreen = document.getElementById('splashScreen');
+        const splashCtx = document.getElementById('splashMoonCanvas').getContext('2d');
+        const splashProgressFill = document.getElementById('splashProgressFill');
+        const splashProgressText = document.getElementById('splashProgressText');
+
+        function drawDetailedMoon(ctx, w, h) {
+            const cx = w/2, cy = h/2, r = w * 0.45;
+            const grad = ctx.createRadialGradient(cx-10, cy-8, 5, cx, cy, r);
+            grad.addColorStop(0, '#f9f3c1');
+            grad.addColorStop(0.5, '#e0c87a');
+            grad.addColorStop(1, '#b58b2e');
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI*2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            ctx.fillStyle = '#8b5e2c';
+            ctx.beginPath(); ctx.ellipse(cx-25, cy-18, 8, 12, 0, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(cx+20, cy+5, 10, 14, -0.2, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(cx+5, cy-25, 6, 9, 0.3, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(cx-10, cy+30, 12, 8, 0.5, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(cx+35, cy-10, 7, 5, -0.1, 0, Math.PI*2); ctx.fill();
+
+            ctx.fillStyle = '#fff3bf';
+            ctx.beginPath(); ctx.ellipse(cx-8, cy-12, 4, 5, 0, 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(cx+12, cy-5, 3, 4, 0, 0, Math.PI*2); ctx.fill();
+
+            ctx.shadowBlur = 25;
+            ctx.shadowColor = '#ffd966';
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(255,217,102,0.2)';
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        }
+        drawDetailedMoon(splashCtx, 200, 200);
+
         // ========== НАСТРОЙКИ ==========
         let sensitivity = parseFloat(localStorage.getItem('sensitivity'));
         if (isNaN(sensitivity)) sensitivity = 5;
-        function saveSensitivity(val) {
-            sensitivity = val;
-            localStorage.setItem('sensitivity', sensitivity);
-        }
+        let targetFPS = parseInt(localStorage.getItem('targetFPS')) || 90;
+        let frameDuration = 1000 / targetFPS;
 
-        // ========== ГЕНЕРАЦИЯ ID ТОЛЬКО БОЛЬШИМИ БУКВАМИ ==========
-        function generatePlayerId() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
-            let id = '#';
-            for (let i = 0; i < 9; i++) {
-                id += chars[Math.floor(Math.random() * chars.length)];
-            }
-            return id;
-        }
+        function saveSensitivity(v){ sensitivity=v; localStorage.setItem('sensitivity',v); }
+        function saveFPS(v){ targetFPS=v; frameDuration=1000/v; localStorage.setItem('targetFPS',v); }
 
         // ========== СКИНЫ ==========
         const skins = [
-            { id: 'red', name: 'Red', color: '#ff3333', price: 1000, rarity: 'Common' },
-            { id: 'yellow', name: 'Yellow', color: '#ffcc33', price: 1000, rarity: 'Common' },
-            { id: 'black', name: 'Black', color: '#222222', price: 1000, rarity: 'Common' },
-            { id: 'blue', name: 'Blue', color: '#3399ff', price: 1000, rarity: 'Common' },
-            { id: 'green', name: 'Green', color: '#33ff33', price: 1000, rarity: 'Common' },
-            { id: 'purple', name: 'Purple', color: '#aa66ff', price: 1000, rarity: 'Common' },
-            { id: 'orange', name: 'Orange', color: '#ff9933', price: 1000, rarity: 'Common' },
-            { id: 'pink', name: 'Pink', color: '#ff66cc', price: 1000, rarity: 'Common' },
-            { id: 'cyan', name: 'Cyan', color: '#33ffff', price: 1000, rarity: 'Common' },
-            { id: 'white', name: 'White', color: '#eeeeee', price: 1000, rarity: 'Common' }
+            { id:'red', name:'Red', color:'#ff3333', price:1000, rarity:'Common' },
+            { id:'yellow', name:'Yellow', color:'#ffcc33', price:1000, rarity:'Common' },
+            { id:'black', name:'Black', color:'#222222', price:1000, rarity:'Common' },
+            { id:'blue', name:'Blue', color:'#3399ff', price:1000, rarity:'Common' },
+            { id:'green', name:'Green', color:'#33ff33', price:1000, rarity:'Common' },
+            { id:'purple', name:'Purple', color:'#aa66ff', price:1000, rarity:'Common' },
+            { id:'orange', name:'Orange', color:'#ff9933', price:1000, rarity:'Common' },
+            { id:'pink', name:'Pink', color:'#ff66cc', price:1000, rarity:'Common' },
+            { id:'cyan', name:'Cyan', color:'#33ffff', price:1000, rarity:'Common' },
+            { id:'white', name:'White', color:'#eeeeee', price:1000, rarity:'Common' }
         ];
         let customSkinImage = localStorage.getItem('customSkinImage');
         let isCustomSkinActive = localStorage.getItem('isCustomSkinActive') === 'true';
         let currentSkinId = localStorage.getItem('currentSkin') || 'red';
         let unlockedSkins = JSON.parse(localStorage.getItem('unlockedSkins')) || ['red'];
+
         function getCurrentSkin() {
-            if (isCustomSkinActive && customSkinImage) {
-                return { type: 'custom', image: customSkinImage };
-            } else {
-                return skins.find(s => s.id === currentSkinId) || skins[0];
-            }
+            if(isCustomSkinActive && customSkinImage) return { type:'custom', image:customSkinImage };
+            else return skins.find(s=>s.id===currentSkinId) || skins[0];
         }
-        function drawBall(ctx, x, y, radius, skin) {
-            if (skin.type === 'custom' && skin.image) {
-                const img = new Image();
-                img.src = skin.image;
-                if (img.complete) {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(x, y, radius, 0, 2 * Math.PI);
-                    ctx.clip();
-                    ctx.drawImage(img, x - radius, y - radius, radius * 2, radius * 2);
+
+        function drawBall(ctx, x, y, r, skin) {
+            if(skin.type==='custom' && skin.image){
+                const img=new Image(); img.src=skin.image;
+                if(img.complete){
+                    ctx.save(); ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.clip();
+                    ctx.drawImage(img,x-r,y-r,r*2,r*2);
                     ctx.restore();
                 } else {
-                    ctx.beginPath();
-                    ctx.arc(x, y, radius, 0, 2 * Math.PI);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fill();
+                    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle='#fff'; ctx.fill();
                 }
             } else {
-                ctx.beginPath();
-                ctx.arc(x, y, radius, 0, 2 * Math.PI);
-                ctx.fillStyle = skin.color;
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fillStyle=skin.color; ctx.fill();
             }
-            ctx.beginPath();
-            ctx.arc(x - 2, y - 2, 3, 0, 2 * Math.PI);
-            ctx.fillStyle = '#fffdeb';
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(x-2,y-2,3,0,Math.PI*2); ctx.fillStyle='#fffdeb'; ctx.fill();
         }
 
         // ========== GAME VARIABLES ==========
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const GRAVITY = 0.20;
-        const JUMP_FORCE = -8.2;
-        const METER_TO_PX = 50;
-        const PLATFORM_DIST = 2 * METER_TO_PX;
-        const BALL_RADIUS = 13;
-        const PLATFORM_WIDTH = 90;
-        const PLATFORM_HEIGHT = 12;
-        const START_PLATFORM_Y = 500;
-        const LAVA_GAP_METERS = 3;
-        const MAX_VY = 12;
+        const GRAVITY=0.20, JUMP_FORCE=-8.2, METER_TO_PX=50, PLATFORM_DIST=2*METER_TO_PX, BALL_RADIUS=13, PLATFORM_WIDTH=90, PLATFORM_HEIGHT=12, START_PLATFORM_Y=500, LAVA_GAP_METERS=3, MAX_VY=12;
+        let ball={x:190, y:START_PLATFORM_Y-BALL_RADIUS, vy:0, vx:0};
+        let platforms=[], cameraY=0, gameActive=false, gameOver=false, paused=false, animationFrame=null, joystickX=0, joystickActive=false;
+        let playerNick=null, playerUid=null;
+        let gameTimer=0, maxHeight=0, currentHeight=0, lastTimestamp=0, timerRunning=false, onGoldenPlatform=true, heightRecordTime=0;
+        let lastSafeX=190, lastSafeY=START_PLATFORM_Y, deathHeight=0, lavaY=START_PLATFORM_Y+200;
+        let stars=[]; for(let i=0;i<200;i++) stars.push({x:20+Math.random()*(canvas.width-40), y:20+Math.random()*(canvas.height-40)});
+        const goldenPlatform={x:120,y:START_PLATFORM_Y,width:PLATFORM_WIDTH,height:PLATFORM_HEIGHT};
+        let globalPlatformCounter=0;
+        let coins=parseInt(localStorage.getItem('playerCoins'));
+        if(isNaN(coins)) coins=500; localStorage.setItem('playerCoins',coins);
+        function updateCoinsUI(){ document.getElementById('coinsDisplay').innerText=Math.floor(coins); document.getElementById('shopBalance').innerText=Math.floor(coins); localStorage.setItem('playerCoins',coins); }
 
-        let ball = { x: 190, y: START_PLATFORM_Y - BALL_RADIUS, vy: 0, vx: 0 };
-        let platforms = [];
-        let cameraY = 0;
-        let gameActive = false;
-        let gameOver = false;
-        let paused = false;
-        let animationFrame = null;
-        let joystickX = 0;
-        let joystickActive = false;
-        
-        let playerNick = null;
-        let playerUid = null;
-        
-        let gameTimer = 0;
-        let maxHeight = 0;
-        let currentHeight = 0;
-        let lastTimestamp = 0;
-        let timerRunning = false;
-        let onGoldenPlatform = true;
-        let heightRecordTime = 0;
-
-        let lastSafeX = 190;
-        let lastSafeY = START_PLATFORM_Y;
-        let deathHeight = 0;
-
-        let lavaY = START_PLATFORM_Y + 200;
-        let stars = [];
-        for (let i = 0; i < 200; i++) stars.push({ x: 20 + Math.random() * (canvas.width - 40), y: 20 + Math.random() * (canvas.height - 40) });
-
-        const goldenPlatform = { x: 120, y: START_PLATFORM_Y, width: PLATFORM_WIDTH, height: PLATFORM_HEIGHT };
-        let globalPlatformCounter = 0;
-
-        let coins = parseInt(localStorage.getItem('playerCoins'));
-        if (isNaN(coins)) { coins = 500; localStorage.setItem('playerCoins', coins); }
-        function updateCoinsUI() { 
-            document.getElementById('coinsDisplay').innerText = Math.floor(coins);
-            document.getElementById('shopBalance').innerText = Math.floor(coins);
-            localStorage.setItem('playerCoins', coins);
-        }
-
-        // ========== ЕЖЕДНЕВНЫЙ СЧЁТЧИК РЕКЛАМЫ ==========
-        let adWatchCountToday = 0;
-        let lastAdDate = localStorage.getItem('lastAdDate');
-        function loadAdCounter() {
-            const today = new Date().toDateString();
-            if (lastAdDate !== today) {
-                adWatchCountToday = 0;
-                localStorage.setItem('lastAdDate', today);
-            } else {
-                adWatchCountToday = parseInt(localStorage.getItem('adWatchCountToday')) || 0;
-            }
-        }
-        function saveAdCounter() {
-            localStorage.setItem('adWatchCountToday', adWatchCountToday);
-        }
+        // ========== РЕКЛАМА ==========
+        let adWatchCountToday=0, lastAdDate=localStorage.getItem('lastAdDate');
+        function loadAdCounter(){ const today=new Date().toDateString(); if(lastAdDate!==today){ adWatchCountToday=0; localStorage.setItem('lastAdDate',today); } else adWatchCountToday=parseInt(localStorage.getItem('adWatchCountToday'))||0; }
+        function saveAdCounter(){ localStorage.setItem('adWatchCountToday',adWatchCountToday); }
         loadAdCounter();
 
-        // ========== РЕКЛАМА (тестовая) ==========
-        function showRewardedAd() {
-            return new Promise((resolve) => {
-                // Здесь будет вызов реального AdMob
-                resolve(true);
-            });
-        }
-
-        // ========== ВОСКРЕШЕНИЕ ==========
-        let reviveCount = 0;
-        const MAX_REVIVES = 5;
-        async function revive() {
-            if (!gameOver) return;
-            if (reviveCount >= MAX_REVIVES) return;
-            const rewarded = await showRewardedAd();
-            if (rewarded) {
+        function showRewardedAd(){ return new Promise(resolve=>resolve(true)); }
+        let reviveCount=0; const MAX_REVIVES=5;
+        async function revive(){
+            if(!gameOver) return;
+            if(reviveCount>=MAX_REVIVES) return;
+            const rewarded=await showRewardedAd();
+            if(rewarded){
                 reviveCount++;
-                gameActive = true;
-                gameOver = false;
-                ball.x = lastSafeX;
-                ball.y = lastSafeY - 25;
-                ball.vy = -11;
-                ball.vx = 0;
-                lavaY += 2 * METER_TO_PX;
-                if (lavaY > START_PLATFORM_Y + 200) lavaY = START_PLATFORM_Y + 200;
-                if (!timerRunning) {
-                    timerRunning = true;
-                    lastTimestamp = performance.now();
-                }
+                gameActive=true; gameOver=false;
+                ball.x=lastSafeX; ball.y=lastSafeY-25; ball.vy=-11; ball.vx=0;
+                lavaY+=2*METER_TO_PX;
+                if(lavaY>START_PLATFORM_Y+200) lavaY=START_PLATFORM_Y+200;
+                if(!timerRunning){ timerRunning=true; lastTimestamp=performance.now(); }
                 document.getElementById('rewardMenu').classList.add('hidden');
                 document.getElementById('gameScreen').classList.remove('game-over');
-                const adBtn = document.getElementById('continueAdBtn');
-                if (reviveCount >= MAX_REVIVES) {
-                    adBtn.disabled = true;
-                    adBtn.style.opacity = '0.5';
-                    adBtn.innerHTML = 'NO MORE REVIVES';
-                }
+                const adBtn=document.getElementById('continueAdBtn');
+                if(reviveCount>=MAX_REVIVES){ adBtn.disabled=true; adBtn.style.opacity='0.5'; adBtn.innerHTML='NO MORE REVIVES'; }
             }
         }
 
-        // ========== РЕКЛАМА В МАГАЗИНЕ (10 МОНЕТ) ==========
-        async function watchAdForCoins() {
-            if (adWatchCountToday >= 5) {
-                alert("You've already watched 5 ads today! Come back tomorrow.");
-                return false;
-            }
-            const rewarded = await showRewardedAd();
-            if (rewarded) {
-                adWatchCountToday++;
-                saveAdCounter();
-                coins += 10;
-                updateCoinsUI();
+        async function watchAdForCoins(){
+            if(adWatchCountToday>=5){ alert("You've already watched 5 ads today! Come back tomorrow."); return false; }
+            const rewarded=await showRewardedAd();
+            if(rewarded){
+                adWatchCountToday++; saveAdCounter();
+                coins+=10; updateCoinsUI();
                 updateMissionAdsWatched(1);
                 return true;
             }
             return false;
         }
 
-        // ========== АУТЕНТИФИКАЦИЯ FIREBASE ==========
+        // ========== АУТЕНТИФИКАЦИЯ ==========
+        function generatePlayerId() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+            let id = '#';
+            for(let i=0;i<9;i++) id += chars[Math.floor(Math.random()*chars.length)];
+            return id;
+        }
+
         function initAuth() {
             return new Promise((resolve, reject) => {
                 auth.onAuthStateChanged(user => {
-                    if (user) {
+                    if(user) {
                         playerUid = user.uid;
                         let savedNick = localStorage.getItem('playerNick');
-                        if (savedNick) {
+                        if(savedNick) {
                             playerNick = savedNick;
                             document.getElementById('profileNickname').innerText = playerNick;
                             document.getElementById('profileId').innerText = playerUid.slice(-8);
@@ -678,7 +677,7 @@
                         <h3>ENTER YOUR NAME</h3>
                         <input type="text" id="nickInput" maxlength="10" placeholder="Nickname (max 10)">
                         <button id="saveNickBtn">START</button>
-                        <div id="nickError" style="display:none; color:#ff8888;"></div>
+                        <div id="nickError" style="display:none; color:#f88;"></div>
                     </div>
                 `;
                 document.body.appendChild(modal);
@@ -687,634 +686,438 @@
                 const errorDiv = document.getElementById('nickError');
                 saveBtn.onclick = () => {
                     let nick = input.value.trim();
-                    if (nick === '') nick = 'Player';
-                    if (nick.length > 10) {
-                        errorDiv.style.display = 'block';
-                        errorDiv.innerText = 'Max 10 characters!';
-                        return;
-                    }
+                    if(nick === '') nick = 'Player';
+                    if(nick.length > 10) { errorDiv.style.display='block'; errorDiv.innerText='Max 10 characters!'; return; }
                     modal.remove();
                     resolve(nick);
                 };
             });
         }
 
-        // ========== МИССИИ (с 24-часовым таймером) ==========
+        // ========== ЛИДЕРБОРД ==========
+        async function fetchLeaders(){
+            try{
+                const snap=await db.ref('leaders').orderByChild('height').limitToLast(500).once('value');
+                const leaders=[];
+                snap.forEach(c=>leaders.push(c.val()));
+                return leaders.reverse();
+            } catch(e){ console.error(e); return []; }
+        }
+        async function addLeader(uid,nickname,height,time){
+            if(!uid || height<=0) return;
+            try{
+                const snap=await db.ref(`leaders/${uid}`).once('value');
+                const data=snap.val();
+                if(data && data.height>=height) return;
+                await db.ref(`leaders/${uid}`).set({ uid, nickname, height, time:time.toFixed(1) });
+                renderLeaders();
+                await loadPersonalBest();
+            } catch(e){ console.error(e); }
+        }
+        async function loadPersonalBest(){
+            if(!playerUid) return;
+            const snap=await db.ref(`leaders/${playerUid}`).once('value');
+            const data=snap.val();
+            if(data && data.height>maxHeight){ maxHeight=data.height; document.getElementById('maxHeightDisplay').innerText=maxHeight.toFixed(1); }
+        }
+        async function renderLeaders(){
+            const list=document.getElementById('leaderList');
+            list.innerHTML='<div class="leader-item">Loading...</div>';
+            const leaders=await fetchLeaders();
+            if(!leaders.length){ list.innerHTML='<div class="leader-item">No records yet</div>'; return; }
+            list.innerHTML=leaders.slice(0,500).map((l,i)=>`<div class="leader-item ${l.uid===playerUid?'current-user':''}"><span>${i+1}. ${l.nickname} <span style="font-size:10px; color:#aaccff;">${l.uid.slice(-8)}</span></span><span>${l.height.toFixed(1)}m</span><span>${l.time}s</span></div>`).join('');
+        }
+
+        // ========== МИССИИ ==========
         let dailyMissions = [
-            { id: 'height100', name: 'Reach 100 meters', goal: 100, progress: 0, reward: 25, completed: false, type: 'height' },
-            { id: 'survive3min', name: 'Survive 3 minutes', goal: 180, progress: 0, reward: 50, completed: false, type: 'survive', displayGoal: '3:00' },
-            { id: 'play20min', name: 'Play for 20 minutes (total)', goal: 1200, progress: 0, reward: 25, completed: false, type: 'totalTime', displayGoal: '20:00' },
-            { id: 'watchAds5', name: 'Watch 5 ads (daily)', goal: 5, progress: 0, reward: 50, completed: false, type: 'adsWatched' }
+            { id:'height100', name:'Reach 100 meters', goal:100, progress:0, reward:25, completed:false, type:'height' },
+            { id:'survive3min', name:'Survive 3 minutes', goal:180, progress:0, reward:50, completed:false, type:'survive', displayGoal:'3:00' },
+            { id:'play20min', name:'Play for 20 minutes (total)', goal:1200, progress:0, reward:25, completed:false, type:'totalTime', displayGoal:'20:00' },
+            { id:'watchAds5', name:'Watch 5 ads (daily)', goal:5, progress:0, reward:50, completed:false, type:'adsWatched' }
         ];
-        let bonusMission = { id: 'completeAll', name: 'Complete all daily missions', progress: 0, reward: 100, completed: false, type: 'bonus' };
+        let bonusMission = { id:'completeAll', name:'Complete all daily missions', progress:0, reward:100, completed:false, type:'bonus' };
         let lastResetTimestamp = localStorage.getItem('lastResetTimestamp');
         let totalDailyPlayTime = parseFloat(localStorage.getItem('totalDailyPlayTime')) || 0;
 
         function saveMissions() {
-            localStorage.setItem('dailyMissions', JSON.stringify(dailyMissions));
-            localStorage.setItem('totalDailyPlayTime', totalDailyPlayTime);
-            localStorage.setItem('bonusMission', JSON.stringify(bonusMission));
+            localStorage.setItem('dailyMissions',JSON.stringify(dailyMissions));
+            localStorage.setItem('totalDailyPlayTime',totalDailyPlayTime);
+            localStorage.setItem('bonusMission',JSON.stringify(bonusMission));
         }
         function loadMissions() {
-            let saved = localStorage.getItem('dailyMissions');
-            if (saved) dailyMissions = JSON.parse(saved);
-            totalDailyPlayTime = parseFloat(localStorage.getItem('totalDailyPlayTime')) || 0;
-            let savedBonus = localStorage.getItem('bonusMission');
-            if (savedBonus) bonusMission = JSON.parse(savedBonus);
+            let saved=localStorage.getItem('dailyMissions');
+            if(saved) dailyMissions=JSON.parse(saved);
+            totalDailyPlayTime=parseFloat(localStorage.getItem('totalDailyPlayTime'))||0;
+            let savedBonus=localStorage.getItem('bonusMission');
+            if(savedBonus) bonusMission=JSON.parse(savedBonus);
             updateBonusMission();
         }
-        function updateBonusMission() {
-            const allCompleted = dailyMissions.every(m => m.completed === true);
-            if (allCompleted && !bonusMission.completed) {
-                bonusMission.completed = true;
-                coins += bonusMission.reward;
-                updateCoinsUI();
-                saveMissions();
-                renderMissions();
-            } else if (!allCompleted && bonusMission.completed) {
-                bonusMission.completed = false;
+        function updateBonusMission(){
+            const allCompleted=dailyMissions.every(m=>m.completed===true);
+            if(allCompleted && !bonusMission.completed){
+                bonusMission.completed=true;
+                coins+=bonusMission.reward; updateCoinsUI();
+                saveMissions(); renderMissions();
+            } else if(!allCompleted && bonusMission.completed){
+                bonusMission.completed=false;
                 saveMissions();
             }
         }
-        function checkDailyReset() {
-            const now = Date.now();
-            const last = parseInt(lastResetTimestamp);
-            if (isNaN(last) || (now - last) >= 24 * 60 * 60 * 1000) {
-                dailyMissions.forEach(m => { m.progress = 0; m.completed = false; });
-                bonusMission.completed = false;
-                totalDailyPlayTime = 0;
-                adWatchCountToday = 0;
-                saveAdCounter();
-                localStorage.setItem('lastResetTimestamp', now.toString());
-                lastResetTimestamp = now.toString();
+        function checkDailyReset(){
+            const now=Date.now();
+            const last=parseInt(lastResetTimestamp);
+            if(isNaN(last) || (now-last)>=24*60*60*1000){
+                dailyMissions.forEach(m=>{ m.progress=0; m.completed=false; });
+                bonusMission.completed=false;
+                totalDailyPlayTime=0;
+                adWatchCountToday=0; saveAdCounter();
+                localStorage.setItem('lastResetTimestamp',now.toString());
+                lastResetTimestamp=now.toString();
                 saveMissions();
                 renderMissions();
-            } else {
-                loadMissions();
-                loadAdCounter();
-            }
+            } else { loadMissions(); loadAdCounter(); }
         }
-        checkDailyReset();
-
-        function checkMissionComplete(mission) {
-            if (!mission.completed && mission.progress >= mission.goal) {
-                mission.completed = true;
-                coins += mission.reward;
-                updateCoinsUI();
-                saveMissions();
-                renderMissions();
+        function checkMissionComplete(mission){
+            if(!mission.completed && mission.progress>=mission.goal){
+                mission.completed=true;
+                coins+=mission.reward; updateCoinsUI();
+                saveMissions(); renderMissions();
                 updateBonusMission();
             }
         }
-        function updateMissionsHeight(height) {
-            let m = dailyMissions.find(m => m.id === 'height100');
-            if (!m.completed && height > m.progress) {
-                m.progress = Math.min(height, m.goal);
+        function updateMissionsHeight(h){ let m=dailyMissions.find(m=>m.id==='height100'); if(!m.completed && h>m.progress){ m.progress=Math.min(h,m.goal); checkMissionComplete(m); saveMissions(); renderMissions(); } }
+        function updateMissionsSurvive(t){ let m=dailyMissions.find(m=>m.id==='survive3min'); if(!m.completed && t>m.progress){ m.progress=Math.min(t,m.goal); checkMissionComplete(m); saveMissions(); renderMissions(); } }
+        function updateMissionsTotalTime(delta){
+            let m=dailyMissions.find(m=>m.id==='play20min');
+            if(!m.completed){
+                totalDailyPlayTime+=delta;
+                if(totalDailyPlayTime>m.goal) totalDailyPlayTime=m.goal;
+                m.progress=totalDailyPlayTime;
                 checkMissionComplete(m);
-                saveMissions();
-                renderMissions();
+                localStorage.setItem('totalDailyPlayTime',totalDailyPlayTime);
+                saveMissions(); renderMissions();
             }
         }
-        function updateMissionsSurvive(time) {
-            let m = dailyMissions.find(m => m.id === 'survive3min');
-            if (!m.completed && time > m.progress) {
-                m.progress = Math.min(time, m.goal);
-                checkMissionComplete(m);
-                saveMissions();
-                renderMissions();
-            }
+        function updateMissionAdsWatched(count){
+            let m=dailyMissions.find(m=>m.id==='watchAds5');
+            if(!m.completed){ m.progress=Math.min(m.progress+count,m.goal); checkMissionComplete(m); saveMissions(); renderMissions(); }
         }
-        function updateMissionsTotalTime(deltaSec) {
-            let m = dailyMissions.find(m => m.id === 'play20min');
-            if (!m.completed) {
-                totalDailyPlayTime += deltaSec;
-                if (totalDailyPlayTime > m.goal) totalDailyPlayTime = m.goal;
-                m.progress = totalDailyPlayTime;
-                checkMissionComplete(m);
-                localStorage.setItem('totalDailyPlayTime', totalDailyPlayTime);
-                saveMissions();
-                renderMissions();
-            }
-        }
-        function updateMissionAdsWatched(count) {
-            let m = dailyMissions.find(m => m.id === 'watchAds5');
-            if (!m.completed) {
-                m.progress = Math.min(m.progress + count, m.goal);
-                checkMissionComplete(m);
-                saveMissions();
-                renderMissions();
-            }
-        }
-        let lastTotalTimeUpdate = performance.now() / 1000;
-        function updateDailyMissions() {
-            if (!gameActive || gameOver || paused) return;
-            let now = performance.now() / 1000;
-            let delta = now - lastTotalTimeUpdate;
-            if (delta > 0.5) {
+        let lastTotalTimeUpdate=performance.now()/1000;
+        function updateDailyMissions(){
+            if(!gameActive || gameOver || paused) return;
+            let now=performance.now()/1000;
+            let delta=now-lastTotalTimeUpdate;
+            if(delta>0.5){
                 updateMissionsSurvive(gameTimer);
                 updateMissionsTotalTime(delta);
-                lastTotalTimeUpdate = now;
+                lastTotalTimeUpdate=now;
             }
             updateMissionsHeight(currentHeight);
         }
-        function formatTime(seconds) {
-            let mins = Math.floor(seconds / 60);
-            let secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        function formatTime(sec){ let m=Math.floor(sec/60), s=Math.floor(sec%60); return `${m}:${s.toString().padStart(2,'0')}`; }
+        function updateResetTimerDisplay(){
+            const now=Date.now();
+            const last=parseInt(localStorage.getItem('lastResetTimestamp'))||now;
+            const elapsed=now-last;
+            const remaining=Math.max(0,24*60*60*1000-elapsed);
+            const h=Math.floor(remaining/(60*60*1000));
+            const m=Math.floor((remaining%(60*60*1000))/(60*1000));
+            const s=Math.floor((remaining%(60*1000))/1000);
+            document.getElementById('resetTimerDisplay').innerText=`Reset in: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
-        function updateResetTimerDisplay() {
-            const now = Date.now();
-            const last = parseInt(localStorage.getItem('lastResetTimestamp')) || now;
-            const elapsed = now - last;
-            const remaining = Math.max(0, 24 * 60 * 60 * 1000 - elapsed);
-            const hours = Math.floor(remaining / (60 * 60 * 1000));
-            const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
-            const seconds = Math.floor((remaining % (60 * 1000)) / 1000);
-            document.getElementById('resetTimerDisplay').innerText = `Reset in: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-        function renderMissions() {
-            const container = document.getElementById('missionsList');
-            container.innerHTML = '';
-            dailyMissions.forEach(mission => {
-                const div = document.createElement('div'); div.className = 'mission-item';
-                let percent = (mission.progress / mission.goal) * 100;
-                let displayProgress = (mission.type === 'survive' || mission.type === 'totalTime') ? formatTime(mission.progress) : mission.progress;
-                let displayGoal = mission.displayGoal ? mission.displayGoal : (mission.type === 'adsWatched' ? mission.goal : mission.goal);
-                let text = mission.type === 'height' ? `${mission.progress}/${mission.goal} m` : (mission.type === 'adsWatched' ? `${mission.progress}/${mission.goal} ads` : `${displayProgress}/${displayGoal}`);
-                div.innerHTML = `
-                    <div class="mission-name">${mission.name}</div>
-                    <div class="mission-progress">${text}</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: ${percent}%;"></div></div>
-                    <div class="mission-reward">Reward: ${mission.reward} 🌟</div>
-                    ${mission.completed ? '<div class="mission-completed">✓ Completed</div>' : ''}
-                `;
+        function renderMissions(){
+            const container=document.getElementById('missionsList');
+            container.innerHTML='';
+            dailyMissions.forEach(m=>{
+                const div=document.createElement('div'); div.className='mission-item';
+                let percent=(m.progress/m.goal)*100;
+                let dispProg=(m.type==='survive'||m.type==='totalTime')?formatTime(m.progress):m.progress;
+                let dispGoal=m.displayGoal?m.displayGoal:(m.type==='adsWatched'?m.goal:m.goal);
+                let txt=m.type==='height'?`${m.progress}/${m.goal} m`:(m.type==='adsWatched'?`${m.progress}/${m.goal} ads`:`${dispProg}/${dispGoal}`);
+                div.innerHTML=`<div class="mission-name">${m.name}</div><div class="mission-progress">${txt}</div><div class="progress-bar"><div class="progress-fill" style="width:${percent}%;"></div></div><div class="mission-reward">Reward: ${m.reward} 🌟</div>${m.completed?'<div class="mission-completed">✓ Completed</div>':''}`;
                 container.appendChild(div);
             });
-            const bonusDiv = document.createElement('div'); bonusDiv.className = 'mission-item';
-            bonusDiv.innerHTML = `
-                <div class="mission-name">⭐ ${bonusMission.name}</div>
-                <div class="mission-progress">${bonusMission.completed ? '✓ Completed' : 'Complete all missions above'}</div>
-                <div class="mission-reward">Reward: ${bonusMission.reward} 🌟</div>
-                ${bonusMission.completed ? '<div class="mission-completed">✓ Completed</div>' : ''}
-            `;
+            const bonusDiv=document.createElement('div'); bonusDiv.className='mission-item';
+            bonusDiv.innerHTML=`<div class="mission-name">⭐ ${bonusMission.name}</div><div class="mission-progress">${bonusMission.completed?'✓ Completed':'Complete all missions above'}</div><div class="mission-reward">Reward: ${bonusMission.reward} 🌟</div>${bonusMission.completed?'<div class="mission-completed">✓ Completed</div>':''}`;
             container.appendChild(bonusDiv);
             updateResetTimerDisplay();
         }
 
-        // ========== PLATFORM MANAGEMENT ==========
-        function initPlatforms() {
-            platforms = [];
-            let y = START_PLATFORM_Y - PLATFORM_DIST;
-            for (let i = 0; i < 15; i++) {
-                let newX = 30 + Math.random() * (canvas.width - PLATFORM_WIDTH - 60);
-                let speed = (Math.random() * 0.5 + 0.2) * (1 + i * 0.005);
+        // ========== ПЛАТФОРМЫ ==========
+        function initPlatforms(){
+            platforms=[]; let y=START_PLATFORM_Y-PLATFORM_DIST;
+            for(let i=0;i<15;i++){
+                let newX=30+Math.random()*(canvas.width-PLATFORM_WIDTH-60);
+                let speed=(Math.random()*0.5+0.2)*(1+i*0.005);
                 globalPlatformCounter++;
-                platforms.push({
-                    x: newX, y: y, width: PLATFORM_WIDTH, height: PLATFORM_HEIGHT,
-                    speed: speed, dir: Math.random() > 0.5 ? 1 : -1,
-                    platformIndex: globalPlatformCounter,
-                    active: true,
-                    isGolden: Math.random() < 0.3
-                });
-                y -= PLATFORM_DIST;
+                platforms.push({ x:newX, y:y, width:PLATFORM_WIDTH, height:PLATFORM_HEIGHT, speed:speed, dir:Math.random()>0.5?1:-1, platformIndex:globalPlatformCounter, active:true, isGolden:Math.random()<0.3 });
+                y-=PLATFORM_DIST;
             }
-            lavaY = START_PLATFORM_Y + 200;
+            lavaY=START_PLATFORM_Y+200;
         }
-        function managePlatforms() {
-            const lowerBound = cameraY - 400;
-            platforms = platforms.filter(p => p.y > lowerBound && p.active);
-            let highestY = platforms.length ? Math.min(...platforms.map(p => p.y)) : START_PLATFORM_Y;
-            while (platforms.length < 15) {
-                let newY = highestY - PLATFORM_DIST;
-                let newX = 30 + Math.random() * (canvas.width - PLATFORM_WIDTH - 60);
-                if (newX + PLATFORM_WIDTH > canvas.width) newX = canvas.width - PLATFORM_WIDTH - 5;
-                let speed = (Math.random() * 0.5 + 0.2) * (1 + Math.abs(newY - START_PLATFORM_Y) * 0.0002);
+        function managePlatforms(){
+            const lowerBound=cameraY-400;
+            platforms=platforms.filter(p=>p.y>lowerBound && p.active);
+            let highestY=platforms.length?Math.min(...platforms.map(p=>p.y)):START_PLATFORM_Y;
+            while(platforms.length<15){
+                let newY=highestY-PLATFORM_DIST;
+                let newX=30+Math.random()*(canvas.width-PLATFORM_WIDTH-60);
+                if(newX+PLATFORM_WIDTH>canvas.width) newX=canvas.width-PLATFORM_WIDTH-5;
+                let speed=(Math.random()*0.5+0.2)*(1+Math.abs(newY-START_PLATFORM_Y)*0.0002);
                 globalPlatformCounter++;
-                platforms.push({
-                    x: newX, y: newY, width: PLATFORM_WIDTH, height: PLATFORM_HEIGHT,
-                    speed: speed, dir: Math.random() > 0.5 ? 1 : -1,
-                    platformIndex: globalPlatformCounter,
-                    active: true,
-                    isGolden: Math.random() < 0.3
-                });
-                highestY = newY;
+                platforms.push({ x:newX, y:newY, width:PLATFORM_WIDTH, height:PLATFORM_HEIGHT, speed:speed, dir:Math.random()>0.5?1:-1, platformIndex:globalPlatformCounter, active:true, isGolden:Math.random()<0.3 });
+                highestY=newY;
             }
         }
 
-        // ========== JOYSTICK ==========
-        const joystickBase = document.getElementById('joystickBase');
-        const joystickThumb = document.getElementById('joystickThumb');
-        function handleJoystickStart(e) { e.preventDefault(); joystickActive = true; joystickBase.setPointerCapture(e.pointerId); updateJoystick(e); }
-        function handleJoystickMove(e) { if (!joystickActive) return; e.preventDefault(); updateJoystick(e); }
-        function handleJoystickEnd(e) { e.preventDefault(); joystickActive = false; joystickX = 0; joystickThumb.style.transform = `translate(0px, 0px)`; if (joystickBase.releasePointerCapture) joystickBase.releasePointerCapture(e.pointerId); }
-        function updateJoystick(e) {
-            const rect = joystickBase.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            let dx = e.clientX - centerX;
-            let dy = e.clientY - centerY;
-            const distance = Math.hypot(dx, dy);
-            const maxDist = rect.width / 2;
-            if (distance > maxDist) { dx = (dx / distance) * maxDist; dy = (dy / distance) * maxDist; }
-            joystickX = dx / maxDist;
-            joystickThumb.style.transform = `translate(${dx}px, ${dy}px)`;
+        // ========== ДЖОЙСТИК ==========
+        const joystickBase=document.getElementById('joystickBase');
+        const joystickThumb=document.getElementById('joystickThumb');
+        function handleJoystickStart(e){ e.preventDefault(); joystickActive=true; joystickBase.setPointerCapture(e.pointerId); updateJoystick(e); }
+        function handleJoystickMove(e){ if(!joystickActive) return; e.preventDefault(); updateJoystick(e); }
+        function handleJoystickEnd(e){ e.preventDefault(); joystickActive=false; joystickX=0; joystickThumb.style.transform='translate(0px,0px)'; if(joystickBase.releasePointerCapture) joystickBase.releasePointerCapture(e.pointerId); }
+        function updateJoystick(e){
+            const rect=joystickBase.getBoundingClientRect();
+            const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+            let dx=e.clientX-cx, dy=e.clientY-cy;
+            const dist=Math.hypot(dx,dy);
+            const maxDist=rect.width/2;
+            if(dist>maxDist){ dx=(dx/dist)*maxDist; dy=(dy/dist)*maxDist; }
+            joystickX=dx/maxDist;
+            joystickThumb.style.transform=`translate(${dx}px,${dy}px)`;
         }
-        joystickBase.addEventListener('pointerdown', handleJoystickStart);
-        joystickBase.addEventListener('pointermove', handleJoystickMove);
-        joystickBase.addEventListener('pointerup', handleJoystickEnd);
-        joystickBase.addEventListener('pointercancel', handleJoystickEnd);
-        document.addEventListener('pointerup', handleJoystickEnd);
+        joystickBase.addEventListener('pointerdown',handleJoystickStart);
+        joystickBase.addEventListener('pointermove',handleJoystickMove);
+        joystickBase.addEventListener('pointerup',handleJoystickEnd);
+        joystickBase.addEventListener('pointercancel',handleJoystickEnd);
+        document.addEventListener('pointerup',handleJoystickEnd);
 
-        // ========== LEADERBOARD (РАБОЧИЙ) ==========
-        async function fetchLeaders() {
-            try {
-                const snapshot = await db.ref('leaders').orderByChild('height').limitToLast(500).once('value');
-                const leaders = [];
-                snapshot.forEach(child => {
-                    leaders.push(child.val());
-                });
-                return leaders.reverse();
-            } catch(e) {
-                console.error("fetchLeaders error", e);
-                return [];
-            }
-        }
-        async function addLeader(uid, nickname, height, time) {
-            if (!uid || height <= 0) return;
-            try {
-                const snapshot = await db.ref(`leaders/${uid}`).once('value');
-                const data = snapshot.val();
-                if (data && data.height >= height) return;
-                await db.ref(`leaders/${uid}`).set({
-                    uid: uid,
-                    nickname: nickname,
-                    height: height,
-                    time: time.toFixed(1)
-                });
-                renderLeaders();
-                await loadPersonalBest();
-            } catch(e) {
-                console.error("addLeader error", e);
-            }
-        }
-        async function loadPersonalBest() {
-            if (!playerUid) return;
-            try {
-                const snapshot = await db.ref(`leaders/${playerUid}`).once('value');
-                const data = snapshot.val();
-                if (data && data.height > maxHeight) {
-                    maxHeight = data.height;
-                    document.getElementById('maxHeightDisplay').innerText = maxHeight.toFixed(1);
-                }
-            } catch(e) {
-                console.error("loadPersonalBest error", e);
-            }
-        }
-        async function renderLeaders() {
-            const list = document.getElementById('leaderList');
-            list.innerHTML = '<div class="leader-item">Loading...</div>';
-            const leaders = await fetchLeaders();
-            if (!leaders.length) {
-                list.innerHTML = '<div class="leader-item">No records yet</div>';
-                return;
-            }
-            list.innerHTML = leaders.slice(0, 500).map((l, i) => `
-                <div class="leader-item ${l.uid === playerUid ? 'current-user' : ''}">
-                    <span>${i+1}. ${l.nickname} <span style="font-size:10px; color:#aaccff;">${l.uid.slice(-8)}</span></span>
-                    <span>${l.height.toFixed(1)}m</span>
-                    <span>${l.time}s</span>
-                </div>
-            `).join('');
-        }
-
-        function resetGame() {
-            gameActive = true;
-            gameOver = false;
-            paused = false;
-            reviveCount = 0;
-            const adBtn = document.getElementById('continueAdBtn');
-            adBtn.disabled = false;
-            adBtn.style.opacity = '1';
-            adBtn.innerHTML = '<span class="btn-icon">📺</span> CONTINUE WITH AD';
-            ball = { x: 190, y: START_PLATFORM_Y - BALL_RADIUS, vy: 0, vx: 0 };
-            cameraY = START_PLATFORM_Y - 400;
-            globalPlatformCounter = 0;
+        function resetGame(){
+            gameActive=true; gameOver=false; paused=false; reviveCount=0;
+            const adBtn=document.getElementById('continueAdBtn');
+            adBtn.disabled=false; adBtn.style.opacity='1'; adBtn.innerHTML='<span class="btn-icon">📺</span> CONTINUE WITH AD';
+            ball={x:190, y:START_PLATFORM_Y-BALL_RADIUS, vy:0, vx:0};
+            cameraY=START_PLATFORM_Y-400;
+            globalPlatformCounter=0;
             initPlatforms();
-            gameTimer = 0;
-            currentHeight = 0;
-            timerRunning = false;
-            onGoldenPlatform = true;
-            lastSafeX = 190;
-            lastSafeY = START_PLATFORM_Y;
+            gameTimer=0; currentHeight=0; timerRunning=false; onGoldenPlatform=true;
+            lastSafeX=190; lastSafeY=START_PLATFORM_Y;
             document.getElementById('rewardMenu').classList.add('hidden');
             document.getElementById('gameScreen').classList.remove('game-over');
             updateCoinsUI();
-            lavaY = START_PLATFORM_Y + 200;
+            lavaY=START_PLATFORM_Y+200;
         }
 
         // ========== GAME LOOP ==========
-        function updateGame() {
-            if (!gameActive || gameOver || paused) return;
-
-            let targetVx = joystickX * sensitivity;
-            ball.vx += (targetVx - ball.vx) * 0.2;
-            ball.x += ball.vx;
-            if (ball.x - BALL_RADIUS < 0) { ball.x = BALL_RADIUS; ball.vx = 0; }
-            if (ball.x + BALL_RADIUS > canvas.width) { ball.x = canvas.width - BALL_RADIUS; ball.vx = 0; }
-
-            ball.vy += GRAVITY;
-            if (ball.vy > MAX_VY) ball.vy = MAX_VY;
-            ball.y += ball.vy;
-
-            let touchedGolden = false;
-
-            if (ball.vy > 0) {
-                if (ball.y + BALL_RADIUS >= goldenPlatform.y && ball.y - BALL_RADIUS < goldenPlatform.y + goldenPlatform.height &&
-                    ball.x + BALL_RADIUS > goldenPlatform.x && ball.x - BALL_RADIUS < goldenPlatform.x + goldenPlatform.width) {
-                    if (ball.y + BALL_RADIUS - ball.vy <= goldenPlatform.y + 5) {
-                        ball.y = goldenPlatform.y - BALL_RADIUS;
-                        ball.vy = JUMP_FORCE;
-                        touchedGolden = true;
-                        lastSafeX = ball.x; lastSafeY = ball.y;
-                        if (navigator.vibrate) navigator.vibrate(50);
+        function updateGame(){
+            if(!gameActive || gameOver || paused) return;
+            let targetVx=joystickX*sensitivity;
+            ball.vx+=(targetVx-ball.vx)*0.2;
+            ball.x+=ball.vx;
+            if(ball.x-BALL_RADIUS<0){ ball.x=BALL_RADIUS; ball.vx=0; }
+            if(ball.x+BALL_RADIUS>canvas.width){ ball.x=canvas.width-BALL_RADIUS; ball.vx=0; }
+            ball.vy+=GRAVITY;
+            if(ball.vy>MAX_VY) ball.vy=MAX_VY;
+            ball.y+=ball.vy;
+            let touchedGolden=false;
+            if(ball.vy>0){
+                if(ball.y+BALL_RADIUS>=goldenPlatform.y && ball.y-BALL_RADIUS<goldenPlatform.y+goldenPlatform.height && ball.x+BALL_RADIUS>goldenPlatform.x && ball.x-BALL_RADIUS<goldenPlatform.x+goldenPlatform.width){
+                    if(ball.y+BALL_RADIUS-ball.vy<=goldenPlatform.y+5){
+                        ball.y=goldenPlatform.y-BALL_RADIUS;
+                        ball.vy=JUMP_FORCE;
+                        touchedGolden=true;
+                        lastSafeX=ball.x; lastSafeY=ball.y;
+                        if(navigator.vibrate) navigator.vibrate(50);
                     }
                 }
-                for (let i = platforms.length - 1; i >= 0; i--) {
-                    let p = platforms[i];
-                    if (p.active && ball.y + BALL_RADIUS > p.y && ball.y - BALL_RADIUS < p.y + p.height && ball.x + BALL_RADIUS > p.x && ball.x - BALL_RADIUS < p.x + p.width) {
-                        if (ball.y + BALL_RADIUS - ball.vy <= p.y + 5) {
-                            ball.y = p.y - BALL_RADIUS;
-                            ball.vy = JUMP_FORCE;
-                            lastSafeX = ball.x; lastSafeY = ball.y;
-                            if (p.isGolden) {
-                                coins += 3;
-                                updateCoinsUI();
-                                p.active = false;
-                            } else if (p.platformIndex >= 50) {
-                                p.active = false;
-                            }
+                for(let i=platforms.length-1;i>=0;i--){
+                    let p=platforms[i];
+                    if(p.active && ball.y+BALL_RADIUS>p.y && ball.y-BALL_RADIUS<p.y+p.height && ball.x+BALL_RADIUS>p.x && ball.x-BALL_RADIUS<p.x+p.width){
+                        if(ball.y+BALL_RADIUS-ball.vy<=p.y+5){
+                            ball.y=p.y-BALL_RADIUS;
+                            ball.vy=JUMP_FORCE;
+                            lastSafeX=ball.x; lastSafeY=ball.y;
+                            if(p.isGolden){ coins+=3; updateCoinsUI(); p.active=false; }
+                            else if(p.platformIndex>=50) p.active=false;
                         }
                         break;
                     }
                 }
             }
-
-            if (onGoldenPlatform && !touchedGolden) { onGoldenPlatform = false; if (!timerRunning) { timerRunning = true; lastTimestamp = performance.now(); } }
-            else if (touchedGolden) { onGoldenPlatform = true; timerRunning = false; }
-
-            let targetLavaY = ball.y + LAVA_GAP_METERS * METER_TO_PX;
-            if (targetLavaY < lavaY) { lavaY = targetLavaY; }
-
-            if (ball.y + BALL_RADIUS > lavaY) {
-                gameActive = false; gameOver = true;
-                deathHeight = currentHeight;
-                let bonus = Math.floor(maxHeight * 0.2);
-                if (bonus > 0) { coins += bonus; updateCoinsUI(); document.getElementById('biomeBonusDisplay').innerHTML = `BONUS: +${bonus} 🌟`; }
-                else document.getElementById('biomeBonusDisplay').innerHTML = '';
-                document.getElementById('deathHeightDisplay').innerText = deathHeight.toFixed(1) + 'm';
+            if(onGoldenPlatform && !touchedGolden){ onGoldenPlatform=false; if(!timerRunning){ timerRunning=true; lastTimestamp=performance.now(); } }
+            else if(touchedGolden){ onGoldenPlatform=true; timerRunning=false; }
+            let targetLavaY=ball.y+LAVA_GAP_METERS*METER_TO_PX;
+            if(targetLavaY<lavaY) lavaY=targetLavaY;
+            if(ball.y+BALL_RADIUS>lavaY){
+                gameActive=false; gameOver=true;
+                deathHeight=currentHeight;
+                let bonus=Math.floor(maxHeight*0.2);
+                if(bonus>0){ coins+=bonus; updateCoinsUI(); document.getElementById('biomeBonusDisplay').innerHTML=`BONUS: +${bonus} 🌟`; }
+                else document.getElementById('biomeBonusDisplay').innerHTML='';
+                document.getElementById('deathHeightDisplay').innerText=deathHeight.toFixed(1)+'m';
                 document.getElementById('rewardMenu').classList.remove('hidden');
                 document.getElementById('gameScreen').classList.add('game-over');
-                if (maxHeight > 0) addLeader(playerUid, playerNick, maxHeight, gameTimer);
+                if(maxHeight>0) addLeader(playerUid,playerNick,maxHeight,gameTimer);
                 return;
             }
-
-            let rawHeight = (START_PLATFORM_Y - ball.y) / METER_TO_PX;
-            currentHeight = Math.max(0, Math.round(rawHeight * 10) / 10);
-            if (currentHeight > maxHeight) {
-                maxHeight = currentHeight;
-                heightRecordTime = gameTimer;
-                document.getElementById('maxHeightDisplay').innerText = maxHeight.toFixed(1);
+            let rawHeight=(START_PLATFORM_Y-ball.y)/METER_TO_PX;
+            currentHeight=Math.max(0,Math.round(rawHeight*10)/10);
+            if(currentHeight>maxHeight){
+                maxHeight=currentHeight;
+                heightRecordTime=gameTimer;
+                document.getElementById('maxHeightDisplay').innerText=maxHeight.toFixed(1);
             }
-
-            platforms.forEach(p => {
-                if (p.active) {
-                    p.x += p.speed * p.dir;
-                    if (p.x < 10) { p.x = 10; p.dir *= -1; }
-                    if (p.x + p.width > canvas.width - 10) { p.x = canvas.width - p.width - 10; p.dir *= -1; }
-                }
-            });
-
-            cameraY += (ball.y - 400 - cameraY) * 0.1;
+            platforms.forEach(p=>{ if(p.active){ p.x+=p.speed*p.dir; if(p.x<10){ p.x=10; p.dir*=-1; } if(p.x+p.width>canvas.width-10){ p.x=canvas.width-p.width-10; p.dir*=-1; } } });
+            cameraY+=(ball.y-400-cameraY)*0.1;
             managePlatforms();
-
-            if (timerRunning && gameActive && !paused) {
-                let now = performance.now();
-                gameTimer += (now - lastTimestamp) / 1000;
-                lastTimestamp = now;
+            if(timerRunning && gameActive && !paused){
+                let now=performance.now();
+                gameTimer+=(now-lastTimestamp)/1000;
+                lastTimestamp=now;
             }
         }
 
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            grad.addColorStop(0, '#0a1a2f');
-            grad.addColorStop(1, '#1a2f3f');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.globalAlpha = 0.6;
-            stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, 1.2, 0, 2*Math.PI); ctx.fillStyle = '#fff'; ctx.fill(); });
-            ctx.globalAlpha = 1;
-
-            let screenLavaY = lavaY - cameraY;
-            if (screenLavaY < canvas.height + 50) {
-                let lavaGradient = ctx.createLinearGradient(0, screenLavaY - 30, 0, screenLavaY + 30);
-                lavaGradient.addColorStop(0, '#ff9900');
-                lavaGradient.addColorStop(1, '#ff3300');
-                ctx.fillStyle = lavaGradient;
-                ctx.shadowBlur = 30;
-                ctx.shadowColor = '#ff6600';
-                ctx.fillRect(0, screenLavaY, canvas.width, canvas.height - screenLavaY + 50);
-                ctx.shadowBlur = 0;
+        function draw(){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            let grad=ctx.createLinearGradient(0,0,0,canvas.height);
+            grad.addColorStop(0,'#0a1a2f'); grad.addColorStop(1,'#1a2f3f');
+            ctx.fillStyle=grad; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.globalAlpha=0.6;
+            stars.forEach(s=>{ ctx.beginPath(); ctx.arc(s.x,s.y,1.2,0,2*Math.PI); ctx.fillStyle='#fff'; ctx.fill(); });
+            ctx.globalAlpha=1;
+            let screenLavaY=lavaY-cameraY;
+            if(screenLavaY<canvas.height+50){
+                let lavaGrad=ctx.createLinearGradient(0,screenLavaY-30,0,screenLavaY+30);
+                lavaGrad.addColorStop(0,'#ff9900'); lavaGrad.addColorStop(1,'#ff3300');
+                ctx.fillStyle=lavaGrad; ctx.shadowBlur=30; ctx.shadowColor='#ff6600';
+                ctx.fillRect(0,screenLavaY,canvas.width,canvas.height-screenLavaY+50);
+                ctx.shadowBlur=0;
             }
-
-            platforms.forEach(p => {
-                if (!p.active) return;
-                let screenY = p.y - cameraY;
-                if (screenY > -50 && screenY < canvas.height+50) {
-                    let color = p.isGolden ? '#ffd966' : (p.platformIndex >= 50 ? '#ff9f9f' : '#91a7ff');
-                    ctx.fillStyle = color;
-                    ctx.shadowBlur = 12; ctx.shadowColor = '#5f7aff';
-                    ctx.beginPath(); ctx.roundRect(p.x, screenY, p.width, p.height, 6); ctx.fill();
-                    ctx.shadowBlur = 0;
+            platforms.forEach(p=>{
+                if(!p.active) return;
+                let screenY=p.y-cameraY;
+                if(screenY>-50 && screenY<canvas.height+50){
+                    let color=p.isGolden?'#ffd966':(p.platformIndex>=50?'#ff9f9f':'#91a7ff');
+                    ctx.fillStyle=color; ctx.shadowBlur=12; ctx.shadowColor='#5f7aff';
+                    ctx.beginPath(); ctx.roundRect(p.x,screenY,p.width,p.height,6); ctx.fill();
+                    ctx.shadowBlur=0;
                 }
             });
-
-            let screenGoldenY = goldenPlatform.y - cameraY;
-            if (screenGoldenY > -50 && screenGoldenY < canvas.height+50) {
-                ctx.fillStyle = '#f5c542';
-                ctx.shadowBlur = 15; ctx.shadowColor = '#ffd966';
-                ctx.beginPath(); ctx.roundRect(goldenPlatform.x, screenGoldenY, goldenPlatform.width, goldenPlatform.height, 6); ctx.fill();
-                ctx.shadowBlur = 0;
+            let screenGoldenY=goldenPlatform.y-cameraY;
+            if(screenGoldenY>-50 && screenGoldenY<canvas.height+50){
+                ctx.fillStyle='#f5c542'; ctx.shadowBlur=15; ctx.shadowColor='#ffd966';
+                ctx.beginPath(); ctx.roundRect(goldenPlatform.x,screenGoldenY,goldenPlatform.width,goldenPlatform.height,6); ctx.fill();
+                ctx.shadowBlur=0;
             }
-
-            const skin = getCurrentSkin();
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = skin.type === 'custom' ? '#ffffff' : skin.color;
-            drawBall(ctx, ball.x, ball.y - cameraY, BALL_RADIUS, skin);
-            ctx.shadowBlur = 3;
-            ctx.beginPath();
-            ctx.arc(ball.x - 2, ball.y - 2 - cameraY, 3, 0, 2 * Math.PI);
-            ctx.fillStyle = '#fffdeb';
-            ctx.fill();
-            ctx.shadowBlur = 0;
+            const skin=getCurrentSkin();
+            ctx.shadowBlur=15; ctx.shadowColor=skin.type==='custom'?'#ffffff':skin.color;
+            drawBall(ctx,ball.x,ball.y-cameraY,BALL_RADIUS,skin);
+            ctx.shadowBlur=3;
+            ctx.beginPath(); ctx.arc(ball.x-2,ball.y-2-cameraY,3,0,2*Math.PI); ctx.fillStyle='#fffdeb'; ctx.fill();
+            ctx.shadowBlur=0;
+        }
+        CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){ if(w<2*r) r=w/2; if(h<2*r) r=h/2; this.moveTo(x+r,y); this.lineTo(x+w-r,y); this.quadraticCurveTo(x+w,y,x+w,y+r); this.lineTo(x+w,y+h-r); this.quadraticCurveTo(x+w,y+h,x+w-r,y+h); this.lineTo(x+r,y+h); this.quadraticCurveTo(x,y+h,x,y+h-r); this.lineTo(x,y+r); this.quadraticCurveTo(x,y,x+r,y); this.closePath(); return this; };
+        function updateStats(){
+            document.getElementById('timerDisplay').innerText=gameTimer.toFixed(1);
+            document.getElementById('currentHeightDisplay').innerText=currentHeight.toFixed(1);
+            document.getElementById('maxHeightDisplay').innerText=maxHeight.toFixed(1);
+            document.getElementById('coinsDisplay').innerText=Math.floor(coins);
         }
 
-        CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-            if (w < 2 * r) r = w / 2;
-            if (h < 2 * r) r = h / 2;
-            this.moveTo(x + r, y);
-            this.lineTo(x + w - r, y);
-            this.quadraticCurveTo(x + w, y, x + w, y + r);
-            this.lineTo(x + w, y + h - r);
-            this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-            this.lineTo(x + r, y + h);
-            this.quadraticCurveTo(x, y + h, x, y + h - r);
-            this.lineTo(x, y + r);
-            this.quadraticCurveTo(x, y, x + r, y);
-            this.closePath();
-            return this;
-        };
-
-        function updateStats() {
-            document.getElementById('timerDisplay').innerText = gameTimer.toFixed(1);
-            document.getElementById('currentHeightDisplay').innerText = currentHeight.toFixed(1);
-            document.getElementById('maxHeightDisplay').innerText = maxHeight.toFixed(1);
-            document.getElementById('coinsDisplay').innerText = Math.floor(coins);
-        }
-
-        // ========== SHOP (с рекламой и кастомным скином) ==========
-        function openZoomModal(imgBase64) {
-            return new Promise((resolve) => {
-                const modal = document.createElement('div');
-                modal.className = 'zoom-modal';
-                const canvasZoom = document.createElement('canvas');
-                canvasZoom.width = 300;
-                canvasZoom.height = 300;
-                canvasZoom.className = 'zoom-canvas';
-                let scale = 1.0;
-                let img = new Image();
-                img.onload = () => {
-                    function redraw() {
-                        const w = img.width * scale, h = img.height * scale;
-                        canvasZoom.getContext('2d').clearRect(0, 0, 300, 300);
-                        canvasZoom.getContext('2d').drawImage(img, (300 - w) / 2, (300 - h) / 2, w, h);
+        // ========== SHOP ==========
+        function openZoomModal(imgBase64){
+            return new Promise((resolve)=>{
+                const modal=document.createElement('div'); modal.className='zoom-modal';
+                const canvasZoom=document.createElement('canvas'); canvasZoom.width=300; canvasZoom.height=300; canvasZoom.className='zoom-canvas';
+                let scale=1.0;
+                let img=new Image();
+                img.onload=()=>{
+                    function redraw(){
+                        const w=img.width*scale, h=img.height*scale;
+                        canvasZoom.getContext('2d').clearRect(0,0,300,300);
+                        canvasZoom.getContext('2d').drawImage(img,(300-w)/2,(300-h)/2,w,h);
                     }
                     redraw();
-                    modal.innerHTML = `<div class="zoom-content">${canvasZoom.outerHTML}<div class="zoom-controls"><button id="zoomOut">−</button><button id="zoomIn">+</button></div><button id="zoomConfirm" class="zoom-confirm">✅ Confirm</button></div>`;
-                    const cnv = modal.querySelector('canvas');
-                    const zoomCtx = cnv.getContext('2d');
-                    const zoomOut = modal.querySelector('#zoomOut');
-                    const zoomIn = modal.querySelector('#zoomIn');
-                    const confirm = modal.querySelector('#zoomConfirm');
-                    zoomOut.onclick = () => { scale = Math.max(0.5, scale - 0.1); const w = img.width * scale, h = img.height * scale; zoomCtx.clearRect(0, 0, 300, 300); zoomCtx.drawImage(img, (300 - w) / 2, (300 - h) / 2, w, h); };
-                    zoomIn.onclick = () => { scale = Math.min(2.0, scale + 0.1); const w = img.width * scale, h = img.height * scale; zoomCtx.clearRect(0, 0, 300, 300); zoomCtx.drawImage(img, (300 - w) / 2, (300 - h) / 2, w, h); };
-                    confirm.onclick = () => {
-                        const offCanvas = document.createElement('canvas');
-                        offCanvas.width = 512;
-                        offCanvas.height = 512;
-                        const offCtx = offCanvas.getContext('2d');
-                        const w = img.width * scale, h = img.height * scale;
-                        offCtx.drawImage(img, (512 - w) / 2, (512 - h) / 2, w, h);
-                        const final = offCanvas.toDataURL('image/png');
+                    modal.innerHTML=`<div class="zoom-content">${canvasZoom.outerHTML}<div class="zoom-controls"><button id="zoomOut">−</button><button id="zoomIn">+</button></div><button id="zoomConfirm" class="zoom-confirm">✅ Confirm</button></div>`;
+                    const cnv=modal.querySelector('canvas');
+                    const zoomCtx=cnv.getContext('2d');
+                    const zoomOut=modal.querySelector('#zoomOut');
+                    const zoomIn=modal.querySelector('#zoomIn');
+                    const confirm=modal.querySelector('#zoomConfirm');
+                    zoomOut.onclick=()=>{ scale=Math.max(0.5,scale-0.1); const w=img.width*scale, h=img.height*scale; zoomCtx.clearRect(0,0,300,300); zoomCtx.drawImage(img,(300-w)/2,(300-h)/2,w,h); };
+                    zoomIn.onclick=()=>{ scale=Math.min(2.0,scale+0.1); const w=img.width*scale, h=img.height*scale; zoomCtx.clearRect(0,0,300,300); zoomCtx.drawImage(img,(300-w)/2,(300-h)/2,w,h); };
+                    confirm.onclick=()=>{
+                        const offCanvas=document.createElement('canvas'); offCanvas.width=512; offCanvas.height=512;
+                        const offCtx=offCanvas.getContext('2d');
+                        const w=img.width*scale, h=img.height*scale;
+                        offCtx.drawImage(img,(512-w)/2,(512-h)/2,w,h);
+                        const final=offCanvas.toDataURL('image/png');
                         modal.remove();
                         resolve(final);
                     };
                     document.body.appendChild(modal);
                 };
-                img.src = imgBase64;
+                img.src=imgBase64;
             });
         }
-        function renderShop() {
-            document.getElementById('shopBalance').innerText = Math.floor(coins);
-            const container = document.getElementById('shopList');
-            container.innerHTML = '<div class="shop-items"></div>';
-            const itemsDiv = container.querySelector('.shop-items');
-
-            skins.forEach(skin => {
-                const unlocked = unlockedSkins.includes(skin.id);
-                const equipped = !isCustomSkinActive && currentSkinId === skin.id;
-                const div = document.createElement('div');
-                div.className = 'shop-item' + (equipped ? ' equipped' : '');
-                let btnHtml = '';
-                if (equipped) btnHtml = '<button class="shop-btn equipped" disabled>Equipped</button>';
-                else if (unlocked) btnHtml = `<button class="shop-btn equip" data-id="${skin.id}">Equip</button>`;
-                else btnHtml = `<button class="shop-btn buy" data-id="${skin.id}" data-price="${skin.price}">Buy (${skin.price} 🌟)</button>`;
-                div.innerHTML = `<div class="preview" style="background:${skin.color};"></div>
-                                <div>${skin.name}</div>
-                                <div class="rarity-badge">${skin.rarity}</div>
-                                ${btnHtml}`;
+        function renderShop(){
+            document.getElementById('shopBalance').innerText=Math.floor(coins);
+            const container=document.getElementById('shopList');
+            container.innerHTML='<div class="shop-items"></div>';
+            const itemsDiv=container.querySelector('.shop-items');
+            skins.forEach(skin=>{
+                const unlocked=unlockedSkins.includes(skin.id);
+                const equipped=!isCustomSkinActive && currentSkinId===skin.id;
+                const div=document.createElement('div'); div.className='shop-item'+(equipped?' equipped':'');
+                let btn='';
+                if(equipped) btn='<button class="shop-btn equipped" disabled>Equipped</button>';
+                else if(unlocked) btn=`<button class="shop-btn equip" data-id="${skin.id}">Equip</button>`;
+                else btn=`<button class="shop-btn buy" data-id="${skin.id}" data-price="${skin.price}">Buy (${skin.price} 🌟)</button>`;
+                div.innerHTML=`<div class="preview" style="background:${skin.color};"></div><div>${skin.name}</div><div class="rarity-badge">${skin.rarity}</div>${btn}`;
                 itemsDiv.appendChild(div);
             });
-
-            // Кастомный скин
-            const customDiv = document.createElement('div');
-            customDiv.className = 'shop-item' + (isCustomSkinActive ? ' equipped' : '');
-            customDiv.innerHTML = `
-                <div class="preview" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);"></div>
-                <div>Custom Skin</div>
-                <div class="rarity-badge">Legendary</div>
-                <button class="shop-btn shop-btn-custom" id="customSkinBtn">${isCustomSkinActive ? 'Change Custom (3000 🌟)' : 'Buy Custom (3000 🌟)'}</button>
-            `;
+            const customDiv=document.createElement('div'); customDiv.className='shop-item'+(isCustomSkinActive?' equipped':'');
+            customDiv.innerHTML=`<div class="preview" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);"></div><div>Custom Skin</div><div class="rarity-badge">Legendary</div><button class="shop-btn shop-btn-custom" id="customSkinBtn">${isCustomSkinActive?'Change Custom (3000 🌟)':'Buy Custom (3000 🌟)'}</button>`;
             itemsDiv.appendChild(customDiv);
-
-            // Реклама за монеты
-            const adDiv = document.createElement('div');
-            adDiv.className = 'shop-item';
-            adDiv.innerHTML = `
-                <div class="preview" style="background: linear-gradient(135deg, #ffa500, #ff8c00);"></div>
-                <div>+10 Coins</div>
-                <div class="rarity-badge">Daily (${5 - adWatchCountToday} left)</div>
-                <button class="shop-btn shop-btn-ad" id="adCoinBtn">Watch Ad (+10🌟)</button>
-            `;
+            const adDiv=document.createElement('div'); adDiv.className='shop-item';
+            adDiv.innerHTML=`<div class="preview" style="background:linear-gradient(135deg,#ffa500,#ff8c00);"></div><div>+10 Coins</div><div class="rarity-badge">Daily (${5-adWatchCountToday} left)</div><button class="shop-btn shop-btn-ad" id="adCoinBtn">Watch Ad (+10🌟)</button>`;
             itemsDiv.appendChild(adDiv);
-
             attachShopEvents();
         }
-        function attachShopEvents() {
-            document.querySelectorAll('.shop-btn.buy').forEach(btn => {
-                btn.onclick = () => {
-                    const id = btn.dataset.id;
-                    const price = parseInt(btn.dataset.price);
-                    if (coins >= price) {
-                        coins -= price;
-                        updateCoinsUI();
+        function attachShopEvents(){
+            document.querySelectorAll('.shop-btn.buy').forEach(btn=>{
+                btn.onclick=()=>{
+                    const id=btn.dataset.id, price=parseInt(btn.dataset.price);
+                    if(coins>=price){
+                        coins-=price; updateCoinsUI();
                         unlockedSkins.push(id);
-                        localStorage.setItem('unlockedSkins', JSON.stringify(unlockedSkins));
+                        localStorage.setItem('unlockedSkins',JSON.stringify(unlockedSkins));
                         equipSkin(id);
                         renderShop();
                     } else alert('Not enough coins!');
                 };
             });
-            document.querySelectorAll('.shop-btn.equip').forEach(btn => {
-                btn.onclick = () => {
-                    const id = btn.dataset.id;
-                    equipSkin(id);
-                    renderShop();
-                };
+            document.querySelectorAll('.shop-btn.equip').forEach(btn=>{
+                btn.onclick=()=>{ equipSkin(btn.dataset.id); renderShop(); };
             });
-
-            const customBtn = document.getElementById('customSkinBtn');
-            if (customBtn) {
-                customBtn.onclick = async () => {
-                    if (coins >= 3000) {
-                        coins -= 3000;
-                        updateCoinsUI();
-                        const input = document.createElement('input');
-                        input.type = 'file';
-                        input.accept = 'image/*';
-                        input.onchange = async (e) => {
-                            const file = e.target.files[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onload = async (ev) => {
-                                    const finalImg = await openZoomModal(ev.target.result);
-                                    customSkinImage = finalImg;
-                                    localStorage.setItem('customSkinImage', customSkinImage);
-                                    isCustomSkinActive = true;
-                                    localStorage.setItem('isCustomSkinActive', 'true');
-                                    currentSkinId = '';
-                                    localStorage.setItem('currentSkin', '');
+            const customBtn=document.getElementById('customSkinBtn');
+            if(customBtn){
+                customBtn.onclick=async()=>{
+                    if(coins>=3000){
+                        coins-=3000; updateCoinsUI();
+                        const input=document.createElement('input'); input.type='file'; input.accept='image/*';
+                        input.onchange=async(e)=>{
+                            const file=e.target.files[0];
+                            if(file){
+                                const reader=new FileReader();
+                                reader.onload=async(ev)=>{
+                                    const finalImg=await openZoomModal(ev.target.result);
+                                    customSkinImage=finalImg;
+                                    localStorage.setItem('customSkinImage',customSkinImage);
+                                    isCustomSkinActive=true;
+                                    localStorage.setItem('isCustomSkinActive','true');
+                                    currentSkinId='';
+                                    localStorage.setItem('currentSkin','');
                                     renderShop();
                                 };
                                 reader.readAsDataURL(file);
@@ -1324,113 +1127,83 @@
                     } else alert('Not enough coins! Need 3000🌟');
                 };
             }
-
-            const adCoinBtn = document.getElementById('adCoinBtn');
-            if (adCoinBtn) {
-                adCoinBtn.onclick = () => watchAdForCoins().then(() => renderShop());
-            }
+            const adCoinBtn=document.getElementById('adCoinBtn');
+            if(adCoinBtn) adCoinBtn.onclick=()=>watchAdForCoins().then(()=>renderShop());
         }
-        function equipSkin(id) {
-            isCustomSkinActive = false;
-            localStorage.setItem('isCustomSkinActive', 'false');
-            currentSkinId = id;
-            localStorage.setItem('currentSkin', id);
+        function equipSkin(id){
+            isCustomSkinActive=false;
+            localStorage.setItem('isCustomSkinActive','false');
+            currentSkinId=id;
+            localStorage.setItem('currentSkin',id);
         }
 
-        // ========== UI NAVIGATION ==========
-        const pauseBtn = document.getElementById('pauseButton');
-        const pauseMenu = document.getElementById('pauseMenu');
-        const resumeBtn = document.getElementById('resumeBtn');
-        const finishGameBtn = document.getElementById('finishGameBtn');
-        const menuScreen = document.getElementById('menuScreen');
-        const leadersScreen = document.getElementById('leadersScreen');
-        const shopScreen = document.getElementById('shopScreen');
-        const missionsScreen = document.getElementById('missionsScreen');
-        const gameScreen = document.getElementById('gameScreen');
-        const rewardMenu = document.getElementById('rewardMenu');
-        const restartAfterDeathBtn = document.getElementById('restartAfterDeathBtn');
-        const menuAfterDeathBtn = document.getElementById('menuAfterDeathBtn');
-        const continueAdBtn = document.getElementById('continueAdBtn');
-
-        pauseBtn.addEventListener('click', () => { 
-            if (gameActive && !gameOver) { 
-                paused = true; 
-                document.getElementById('pauseHeight').innerText = currentHeight.toFixed(1) + 'm';
-                pauseMenu.classList.remove('hidden'); 
-            } 
-        });
-        resumeBtn.addEventListener('click', () => { paused = false; pauseMenu.classList.add('hidden'); if (timerRunning) lastTimestamp = performance.now(); });
-        finishGameBtn.addEventListener('click', async () => {
-            if (gameActive && !gameOver) {
-                if (currentHeight > maxHeight) {
-                    maxHeight = currentHeight;
-                    await addLeader(playerUid, playerNick, maxHeight, gameTimer);
-                    document.getElementById('maxHeightDisplay').innerText = maxHeight.toFixed(1);
+        // ========== UI НАВИГАЦИЯ ==========
+        const pauseBtn=document.getElementById('pauseButton'), pauseMenu=document.getElementById('pauseMenu'), resumeBtn=document.getElementById('resumeBtn'), finishGameBtn=document.getElementById('finishGameBtn');
+        const menuScreen=document.getElementById('menuScreen'), leadersScreen=document.getElementById('leadersScreen'), shopScreen=document.getElementById('shopScreen'), missionsScreen=document.getElementById('missionsScreen'), gameScreen=document.getElementById('gameScreen');
+        const rewardMenu=document.getElementById('rewardMenu'), restartAfterDeathBtn=document.getElementById('restartAfterDeathBtn'), menuAfterDeathBtn=document.getElementById('menuAfterDeathBtn'), continueAdBtn=document.getElementById('continueAdBtn');
+        pauseBtn.addEventListener('click',()=>{ if(gameActive && !gameOver){ paused=true; document.getElementById('pauseHeight').innerText=currentHeight.toFixed(1)+'m'; pauseMenu.classList.remove('hidden'); } });
+        resumeBtn.addEventListener('click',()=>{ paused=false; pauseMenu.classList.add('hidden'); if(timerRunning) lastTimestamp=performance.now(); });
+        finishGameBtn.addEventListener('click',async()=>{
+            if(gameActive && !gameOver){
+                if(currentHeight>maxHeight){
+                    maxHeight=currentHeight;
+                    await addLeader(playerUid,playerNick,maxHeight,gameTimer);
+                    document.getElementById('maxHeightDisplay').innerText=maxHeight.toFixed(1);
                 }
-                gameActive = false;
-                paused = false;
-                showMenu();
+                gameActive=false; paused=false; showMenu();
             }
         });
-        restartAfterDeathBtn.addEventListener('click', () => { rewardMenu.classList.add('hidden'); document.getElementById('gameScreen').classList.remove('game-over'); resetGame(); });
-        menuAfterDeathBtn.addEventListener('click', () => { rewardMenu.classList.add('hidden'); document.getElementById('gameScreen').classList.remove('game-over'); showMenu(); });
-        continueAdBtn.addEventListener('click', () => { revive(); });
+        restartAfterDeathBtn.addEventListener('click',()=>{ rewardMenu.classList.add('hidden'); document.getElementById('gameScreen').classList.remove('game-over'); resetGame(); });
+        menuAfterDeathBtn.addEventListener('click',()=>{ rewardMenu.classList.add('hidden'); document.getElementById('gameScreen').classList.remove('game-over'); showMenu(); });
+        continueAdBtn.addEventListener('click',()=>{ revive(); });
 
-        function showMenu() {
-            menuScreen.classList.remove('hidden');
-            leadersScreen.classList.add('hidden');
-            shopScreen.classList.add('hidden');
-            missionsScreen.classList.add('hidden');
-            gameScreen.classList.add('hidden');
-            pauseMenu.classList.add('hidden');
-            rewardMenu.classList.add('hidden');
+        function showMenu(){
+            menuScreen.classList.remove('hidden'); leadersScreen.classList.add('hidden'); shopScreen.classList.add('hidden'); missionsScreen.classList.add('hidden'); gameScreen.classList.add('hidden');
+            pauseMenu.classList.add('hidden'); rewardMenu.classList.add('hidden');
             document.getElementById('gameScreen').classList.remove('game-over');
-            if (animationFrame) cancelAnimationFrame(animationFrame);
-            animationFrame = null;
-            gameActive = false;
+            if(animationFrame) cancelAnimationFrame(animationFrame);
+            animationFrame=null;
+            gameActive=false;
         }
-        function showLeaders() { menuScreen.classList.add('hidden'); leadersScreen.classList.remove('hidden'); shopScreen.classList.add('hidden'); missionsScreen.classList.add('hidden'); gameScreen.classList.add('hidden'); renderLeaders(); }
-        function showShop() { menuScreen.classList.add('hidden'); shopScreen.classList.remove('hidden'); leadersScreen.classList.add('hidden'); missionsScreen.classList.add('hidden'); gameScreen.classList.add('hidden'); renderShop(); }
-        function showMissions() { menuScreen.classList.add('hidden'); missionsScreen.classList.remove('hidden'); leadersScreen.classList.add('hidden'); shopScreen.classList.add('hidden'); gameScreen.classList.add('hidden'); renderMissions(); }
-
-        async function startGame() {
+        function showLeaders(){ menuScreen.classList.add('hidden'); leadersScreen.classList.remove('hidden'); shopScreen.classList.add('hidden'); missionsScreen.classList.add('hidden'); gameScreen.classList.add('hidden'); renderLeaders(); }
+        function showShop(){ menuScreen.classList.add('hidden'); shopScreen.classList.remove('hidden'); leadersScreen.classList.add('hidden'); missionsScreen.classList.add('hidden'); gameScreen.classList.add('hidden'); renderShop(); }
+        function showMissions(){ menuScreen.classList.add('hidden'); missionsScreen.classList.remove('hidden'); leadersScreen.classList.add('hidden'); shopScreen.classList.add('hidden'); gameScreen.classList.add('hidden'); renderMissions(); }
+        function startGame(){
             menuScreen.classList.add('hidden');
             gameScreen.classList.remove('hidden');
-            await loadPersonalBest();
-            resetGame();
-            lastTotalTimeUpdate = performance.now() / 1000;
-            if (animationFrame) cancelAnimationFrame(animationFrame);
-            animationFrame = requestAnimationFrame(function loop() {
-                if (gameActive && !gameOver && !paused) {
-                    updateGame();
-                    updateDailyMissions();
-                }
-                draw();
-                updateStats();
-                animationFrame = requestAnimationFrame(loop);
+            loadPersonalBest().then(()=>{
+                resetGame();
+                lastTotalTimeUpdate=performance.now()/1000;
+                if(animationFrame) cancelAnimationFrame(animationFrame);
+                animationFrame=requestAnimationFrame(function loop(now){
+                    if(gameActive && !gameOver && !paused){ updateGame(); updateDailyMissions(); }
+                    draw(); updateStats();
+                    animationFrame=requestAnimationFrame(loop);
+                });
             });
         }
 
-        function openSettings() {
-            const modal = document.createElement('div');
-            modal.className = 'settings-modal';
-            modal.innerHTML = `
-                <div class="settings-content">
-                    <h3>⚙️ SETTINGS</h3>
-                    <label>Sensitivity (1–10)</label>
-                    <input type="range" id="sensitivitySlider" min="1" max="10" step="0.5" value="${sensitivity}">
-                    <div>Current: <span id="sensitivityValue" class="sensitivity-value">${sensitivity}</span></div>
-                    <button id="closeSettings">OK</button>
-                </div>
+        function openSettings(){
+            const modal=document.createElement('div'); modal.className='settings-modal';
+            const content=document.createElement('div'); content.className='settings-content';
+            content.innerHTML=`
+                <h3>⚙️ SETTINGS</h3>
+                <label>Sensitivity (1–10)</label>
+                <input type="range" id="sensitivitySlider" min="1" max="10" step="0.5" value="${sensitivity}">
+                <div>Current: <span id="sensitivityValue" class="sensitivity-value">${sensitivity}</span></div>
+                <label>Max FPS</label>
+                <select id="fpsSelect"><option value="60">60</option><option value="90">90</option><option value="120">120</option></select>
+                <div class="divider"></div>
+                <button id="closeSettings">OK</button>
             `;
+            modal.appendChild(content);
             document.body.appendChild(modal);
-            const slider = document.getElementById('sensitivitySlider');
-            const valueSpan = document.getElementById('sensitivityValue');
-            slider.oninput = () => {
-                const val = parseFloat(slider.value);
-                valueSpan.innerText = val;
-                saveSensitivity(val);
-            };
+            const slider=document.getElementById('sensitivitySlider');
+            const fpsSelect=document.getElementById('fpsSelect');
+            const valSpan=document.getElementById('sensitivityValue');
+            fpsSelect.value=targetFPS;
+            slider.oninput=()=>{ const v=parseFloat(slider.value); valSpan.innerText=v; saveSensitivity(v); };
+            fpsSelect.onchange=()=>{ saveFPS(parseInt(fpsSelect.value)); };
             document.getElementById('closeSettings').onclick = () => modal.remove();
         }
         document.getElementById('settingsBtn').addEventListener('click', openSettings);
@@ -1441,23 +1214,28 @@
         document.getElementById('backFromLeadersBtn').addEventListener('click', showMenu);
         document.getElementById('backFromShopBtn').addEventListener('click', showMenu);
         document.getElementById('backFromMissionsBtn').addEventListener('click', showMenu);
-        document.getElementById('copyIdBtn').onclick = () => {
-            navigator.clipboard.writeText(playerUid);
-            const btn = document.getElementById('copyIdBtn');
-            const original = btn.innerText;
-            btn.innerText = 'Copied!';
-            setTimeout(() => btn.innerText = original, 1500);
-        };
+        document.getElementById('copyIdBtn').onclick=()=>{ navigator.clipboard.writeText(playerUid); const btn=document.getElementById('copyIdBtn'); const orig=btn.innerText; btn.innerText='Copied!'; setTimeout(()=>btn.innerText=orig,1500); };
 
         updateCoinsUI();
-        initAuth().then(() => {
-            showMenu();
-            setInterval(() => {
-                if (!missionsScreen.classList.contains('hidden')) {
-                    updateResetTimerDisplay();
-                }
-            }, 1000);
-        }).catch(err => {
+        // Запуск с сохранением сплэша до готовности
+        let fakeProgress=0;
+        const fakeInterval=setInterval(()=>{
+            fakeProgress=Math.min(95, fakeProgress+Math.random()*10);
+            splashProgressFill.style.width=fakeProgress+'%';
+            splashProgressText.innerText=Math.floor(fakeProgress)+'%';
+        },200);
+        initAuth().then(()=>{
+            clearInterval(fakeInterval);
+            splashProgressFill.style.width='100%';
+            splashProgressText.innerText='100%';
+            setTimeout(()=>{
+                splashScreen.style.opacity='0';
+                setTimeout(()=>{ splashScreen.style.display='none'; },500);
+                checkDailyReset();
+                showMenu();
+                setInterval(()=>{ if(!missionsScreen.classList.contains('hidden')) updateResetTimerDisplay(); },1000);
+            },300);
+        }).catch(err=>{
             console.error(err);
             alert('Authentication failed. Please check your internet connection.');
         });
