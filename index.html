@@ -14,8 +14,9 @@
         const firebaseConfig = {
             apiKey: "AIzaSyAoTsWwsxYkZCMKByIURgdsRW0hZQmKB_0",
             authDomain: "night-jumper-f439a.firebaseapp.com",
+            databaseURL: "https://night-jumper-f439a-default-rtdb.firebaseio.com",
             projectId: "night-jumper-f439a",
-            storageBucket: ""night-jumper-f439a.firebasestorage.app",
+            storageBucket: "night-jumper-f439a.firebasestorage.app",
             messagingSenderId: "1055549255440",
             appId: "1:1055549255440:web:d5ab5c31c7d7bdcd937f95",
             measurementId: "G-43XFCHBVGC"
@@ -25,7 +26,6 @@
         const db = firebase.database();
     </script>
     <style>
-        /* (все стили остаются такими же, как в предыдущей версии с настройками) */
         * {
             margin: 0;
             padding: 0;
@@ -238,7 +238,7 @@
             margin-left: 10px;
         }
 
-        /* Остальные стили (сокращены, но все присутствуют) */
+        /* ========== COMMON ========== */
         .leaders-board, .shop-screen, .missions-screen { background: #222842; width: 100%; color: #eee; }
         .leaders-header { font-size: 28px; font-weight: 700; margin: 10px 0; text-shadow: 0 0 8px #7f95ff; animation: headerGlow 3s ease infinite; }
         @keyframes headerGlow { 0%,100% { text-shadow: 0 0 8px #7f95ff; } 50% { text-shadow: 0 0 20px #7f95ff, 0 0 30px #aaccff; } }
@@ -251,7 +251,8 @@
         .leader-item.current-user { background: #5a6bb0; border-left-color: #ffd966; font-weight: bold; box-shadow: 0 0 10px #ffd966; }
         .back-btn { background: linear-gradient(135deg, #5a6bb0, #3d4a7a); border: none; color: white; font-size: 20px; font-weight: bold; padding: 12px 30px; border-radius: 60px; margin: 15px 0 5px; box-shadow: 0 6px 0 #1e2745; cursor: pointer; transition: all 0.1s; text-shadow: 0 1px 0 rgba(0,0,0,0.3); }
         .back-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #1e2745; }
-        /* GAME SCREEN */
+
+        /* ========== GAME SCREEN ========== */
         .game-screen { background: #222842; padding: 5px 0 10px; position: relative; min-height: 600px; }
         .stats { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 6px 10px; background: #2a3150; border-radius: 50px; margin-bottom: 8px; color: white; font-size: 14px; }
         .stat-item { display: flex; flex-direction: column; align-items: center; }
@@ -264,7 +265,8 @@
         .joystick-base { width: 90px; height: 90px; background: #3d4a7a; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 0 #1e2745, 0 8px 15px black; border: 2px solid #5c6fb1; touch-action: none; animation: joystickBreath 2s ease infinite; }
         @keyframes joystickBreath { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
         .joystick-thumb { width: 35px; height: 35px; background: #6d82d1; border-radius: 50%; box-shadow: 0 3px 0 #35406b; transition: transform 0.02s; will-change: transform; border: 2px solid #a2b9ff; }
-        /* GAME OVER */
+
+        /* ========== GAME OVER ========== */
         #gameScreen.game-over .stats, #gameScreen.game-over .joystick-area { display: none !important; }
         #gameScreen.game-over canvas { pointer-events: none; }
         .reward-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: rgba(10,15,35,0.97); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; border-radius: 25px; animation: fadeInOverlay 0.4s ease forwards; }
@@ -289,7 +291,8 @@
         .go-btn-restart { background: linear-gradient(135deg,#4caf50,#2e7d32); }
         .go-btn-menu { background: linear-gradient(135deg,#5a6bb0,#3d4a7a); }
         .btn-icon { font-size: 20px; }
-        /* PAUSE MENU */
+
+        /* ========== PAUSE MENU ========== */
         .pause-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); display:flex; justify-content:center; align-items:center; z-index:200; border-radius:25px; }
         .pause-menu { background:#2a3150; padding:25px 20px; border-radius:50px; width:280px; text-align:center; box-shadow:0 20px 30px rgba(0,0,0,0.5); animation:pausePop 0.5s cubic-bezier(0.68,-0.55,0.27,1.55) forwards; }
         @keyframes pausePop { 0% { transform:scale(0.3); opacity:0; } 100% { transform:scale(1); opacity:1; } }
@@ -301,7 +304,8 @@
         .pause-btn-menu:active { transform:translateY(4px); box-shadow:0 0 0 #1e2745; }
         .pause-resume { background:linear-gradient(135deg,#4caf50,#2e7d32); }
         .pause-quit { background:linear-gradient(135deg,#f44336,#c62828); }
-        /* SHOP */
+
+        /* ========== SHOP ========== */
         .shop-tabs {
             display: flex;
             gap: 10px;
@@ -357,18 +361,30 @@
         .shop-btn.buy { background: #4caf50; }
         .shop-btn.equip { background: #ffb347; color: #222; }
         .shop-btn.equipped { background: #2a3150; color: #888; cursor: default; }
-        /* Добавляем специальную кнопку для кастомного скина */
         .shop-btn-custom {
             background: linear-gradient(135deg, #9b59b6, #8e44ad);
         }
-        /* MISSIONS */
-        .mission-item { display:flex; flex-direction:column; gap:6px; }
+        .shop-btn-ad {
+            background: linear-gradient(135deg, #ffa500, #ff8c00);
+        }
+
+        /* ========== MISSIONS ========== */
+        .mission-item { display:flex; flex-direction:column; gap:6px; margin: 8px 0; padding: 10px; background: #2a3150; border-radius: 20px; border-left: 4px solid #ffd966; }
         .mission-name { font-weight:bold; }
         .mission-progress { font-size:12px; color:#ffd966; }
         .mission-reward { font-size:12px; color:#a2b9ff; }
         .progress-bar { width:100%; height:8px; background:#2a3150; border-radius:4px; overflow:hidden; margin:8px 0; }
         .progress-fill { height:100%; background:#ffd966; width:0%; transition:width 0.2s; }
         .mission-completed { color:#4caf50; font-weight:bold; }
+        .reset-timer {
+            text-align: center;
+            margin-top: 15px;
+            padding: 8px;
+            background: #1e243f;
+            border-radius: 40px;
+            font-size: 14px;
+            color: #ffd966;
+        }
     </style>
 </head>
 <body>
@@ -395,9 +411,11 @@
         <button class="menu-btn" id="shopBtn">SHOP</button>
         <button class="menu-btn" id="missionsBtn">MISSIONS</button>
     </div>
+
     <div class="screen leaders-board hidden" id="leadersScreen"><div class="leaders-header">TOP 500</div><div class="leaders-list" id="leaderList">Loading...</div><button class="back-btn" id="backFromLeadersBtn">BACK</button></div>
     <div class="screen shop-screen hidden" id="shopScreen"><div class="leaders-header">SHOP</div><div style="font-size:20px;color:#ffd966;margin-bottom:10px;">Balance: <span id="shopBalance">0</span> 🌟</div><div class="shop-tabs"><div class="shop-tab active" data-tab="skins">SKINS</div></div><div class="leaders-list" id="shopList"></div><button class="back-btn" id="backFromShopBtn">BACK</button></div>
-    <div class="screen missions-screen hidden" id="missionsScreen"><div class="leaders-header">DAILY MISSIONS</div><div class="leaders-list" id="missionsList"></div><button class="back-btn" id="backFromMissionsBtn">BACK</button></div>
+    <div class="screen missions-screen hidden" id="missionsScreen"><div class="leaders-header">DAILY MISSIONS</div><div class="leaders-list" id="missionsList"></div><div id="resetTimerDisplay" class="reset-timer"></div><button class="back-btn" id="backFromMissionsBtn">BACK</button></div>
+
     <div class="screen game-screen hidden" id="gameScreen">
         <div class="stats">
             <div class="stat-item"><span class="stat-label">TIME</span><span class="stat-value" id="timerDisplay">0.0</span></div>
@@ -418,6 +436,7 @@
         <div class="joystick-area"><div class="joystick-base" id="joystickBase"><div class="joystick-thumb" id="joystickThumb"></div></div></div>
     </div>
 </div>
+
 <script>
     (function() {
         // ========== НАСТРОЙКИ ==========
@@ -427,6 +446,17 @@
             sensitivity = val;
             localStorage.setItem('sensitivity', sensitivity);
         }
+
+        // ========== ГЕНЕРАЦИЯ ID ТОЛЬКО БОЛЬШИМИ БУКВАМИ ==========
+        function generatePlayerId() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+            let id = '#';
+            for (let i = 0; i < 9; i++) {
+                id += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return id;
+        }
+
         // ========== СКИНЫ ==========
         const skins = [
             { id: 'red', name: 'Red', color: '#ff3333', price: 1000, rarity: 'Common' },
@@ -440,12 +470,10 @@
             { id: 'cyan', name: 'Cyan', color: '#33ffff', price: 1000, rarity: 'Common' },
             { id: 'white', name: 'White', color: '#eeeeee', price: 1000, rarity: 'Common' }
         ];
-        // Кастомный скин: храним base64 изображения и флаг, что он активен
-        let customSkinImage = localStorage.getItem('customSkinImage'); // base64 или null
+        let customSkinImage = localStorage.getItem('customSkinImage');
         let isCustomSkinActive = localStorage.getItem('isCustomSkinActive') === 'true';
         let currentSkinId = localStorage.getItem('currentSkin') || 'red';
         let unlockedSkins = JSON.parse(localStorage.getItem('unlockedSkins')) || ['red'];
-
         function getCurrentSkin() {
             if (isCustomSkinActive && customSkinImage) {
                 return { type: 'custom', image: customSkinImage };
@@ -453,11 +481,8 @@
                 return skins.find(s => s.id === currentSkinId) || skins[0];
             }
         }
-
-        // Функция для отрисовки мяча (поддерживает кастомное изображение)
         function drawBall(ctx, x, y, radius, skin) {
             if (skin.type === 'custom' && skin.image) {
-                // Рисуем изображение, обрезанное по кругу
                 const img = new Image();
                 img.src = skin.image;
                 if (img.complete) {
@@ -468,23 +493,17 @@
                     ctx.drawImage(img, x - radius, y - radius, radius * 2, radius * 2);
                     ctx.restore();
                 } else {
-                    // Пока не загрузилось, рисуем белый круг (или цвет по умолчанию)
                     ctx.beginPath();
                     ctx.arc(x, y, radius, 0, 2 * Math.PI);
                     ctx.fillStyle = '#ffffff';
                     ctx.fill();
-                    img.onload = () => {
-                        // Не перерисовываем здесь, но можно вызвать перерисовку
-                    };
                 }
             } else {
-                // Обычный цветной скин
                 ctx.beginPath();
                 ctx.arc(x, y, radius, 0, 2 * Math.PI);
                 ctx.fillStyle = skin.color;
                 ctx.fill();
             }
-            // Глазок (всегда одинаковый)
             ctx.beginPath();
             ctx.arc(x - 2, y - 2, 3, 0, 2 * Math.PI);
             ctx.fillStyle = '#fffdeb';
@@ -545,6 +564,81 @@
             localStorage.setItem('playerCoins', coins);
         }
 
+        // ========== ЕЖЕДНЕВНЫЙ СЧЁТЧИК РЕКЛАМЫ ==========
+        let adWatchCountToday = 0;
+        let lastAdDate = localStorage.getItem('lastAdDate');
+        function loadAdCounter() {
+            const today = new Date().toDateString();
+            if (lastAdDate !== today) {
+                adWatchCountToday = 0;
+                localStorage.setItem('lastAdDate', today);
+            } else {
+                adWatchCountToday = parseInt(localStorage.getItem('adWatchCountToday')) || 0;
+            }
+        }
+        function saveAdCounter() {
+            localStorage.setItem('adWatchCountToday', adWatchCountToday);
+        }
+        loadAdCounter();
+
+        // ========== РЕКЛАМА (тестовая) ==========
+        function showRewardedAd() {
+            return new Promise((resolve) => {
+                // Здесь будет вызов реального AdMob
+                resolve(true);
+            });
+        }
+
+        // ========== ВОСКРЕШЕНИЕ ==========
+        let reviveCount = 0;
+        const MAX_REVIVES = 5;
+        async function revive() {
+            if (!gameOver) return;
+            if (reviveCount >= MAX_REVIVES) return;
+            const rewarded = await showRewardedAd();
+            if (rewarded) {
+                reviveCount++;
+                gameActive = true;
+                gameOver = false;
+                ball.x = lastSafeX;
+                ball.y = lastSafeY - 25;
+                ball.vy = -11;
+                ball.vx = 0;
+                lavaY += 2 * METER_TO_PX;
+                if (lavaY > START_PLATFORM_Y + 200) lavaY = START_PLATFORM_Y + 200;
+                if (!timerRunning) {
+                    timerRunning = true;
+                    lastTimestamp = performance.now();
+                }
+                document.getElementById('rewardMenu').classList.add('hidden');
+                document.getElementById('gameScreen').classList.remove('game-over');
+                const adBtn = document.getElementById('continueAdBtn');
+                if (reviveCount >= MAX_REVIVES) {
+                    adBtn.disabled = true;
+                    adBtn.style.opacity = '0.5';
+                    adBtn.innerHTML = 'NO MORE REVIVES';
+                }
+            }
+        }
+
+        // ========== РЕКЛАМА В МАГАЗИНЕ (10 МОНЕТ) ==========
+        async function watchAdForCoins() {
+            if (adWatchCountToday >= 5) {
+                alert("You've already watched 5 ads today! Come back tomorrow.");
+                return false;
+            }
+            const rewarded = await showRewardedAd();
+            if (rewarded) {
+                adWatchCountToday++;
+                saveAdCounter();
+                coins += 10;
+                updateCoinsUI();
+                updateMissionAdsWatched(1);
+                return true;
+            }
+            return false;
+        }
+
         // ========== АУТЕНТИФИКАЦИЯ FIREBASE ==========
         function initAuth() {
             return new Promise((resolve, reject) => {
@@ -578,13 +672,13 @@
         function showNickModal() {
             return new Promise((resolve) => {
                 const modal = document.createElement('div');
-                modal.className = 'nick-modal';
+                modal.className = 'settings-modal';
                 modal.innerHTML = `
-                    <div class="nick-modal-content">
+                    <div class="settings-content">
                         <h3>ENTER YOUR NAME</h3>
                         <input type="text" id="nickInput" maxlength="10" placeholder="Nickname (max 10)">
                         <button id="saveNickBtn">START</button>
-                        <div id="nickError" class="error-msg" style="display:none;"></div>
+                        <div id="nickError" style="display:none; color:#ff8888;"></div>
                     </div>
                 `;
                 document.body.appendChild(modal);
@@ -605,106 +699,59 @@
             });
         }
 
-        // ========== FIREBASE DATABASE ==========
-        async function fetchLeaders() {
-            try {
-                const snapshot = await db.ref('leaders').orderByChild('height').limitToLast(500).once('value');
-                const leaders = [];
-                snapshot.forEach(child => {
-                    leaders.push(child.val());
-                });
-                return leaders.reverse();
-            } catch(e) {
-                console.error(e);
-                return [];
-            }
-        }
-
-        async function addLeader(uid, nickname, height, time) {
-            if (!uid || height <= 0) return;
-            if (!navigator.onLine) return;
-            try {
-                const snapshot = await db.ref(`leaders/${uid}`).once('value');
-                const data = snapshot.val();
-                if (data && data.height >= height) return;
-                await db.ref(`leaders/${uid}`).set({
-                    uid: uid,
-                    nickname: nickname,
-                    height: height,
-                    time: time.toFixed(1)
-                });
-                renderLeaders();
-                await loadPersonalBest();
-            } catch(e) {
-                console.error(e);
-            }
-        }
-
-        async function loadPersonalBest() {
-            if (!playerUid) return;
-            const snapshot = await db.ref(`leaders/${playerUid}`).once('value');
-            const data = snapshot.val();
-            if (data && data.height > maxHeight) {
-                maxHeight = data.height;
-                document.getElementById('maxHeightDisplay').innerText = maxHeight.toFixed(1);
-            }
-        }
-
-        async function renderLeaders() {
-            const list = document.getElementById('leaderList');
-            list.innerHTML = '<div class="leader-item">Loading...</div>';
-            const leaders = await fetchLeaders();
-            if (!leaders.length) {
-                list.innerHTML = '<div class="leader-item">No records yet</div>';
-                return;
-            }
-            list.innerHTML = leaders.slice(0,500).map((l, i) => `
-                <div class="leader-item ${l.uid === playerUid ? 'current-user' : ''}">
-                    <span>${i+1}. ${l.nickname} <span style="font-size:10px; color:#aaccff;">${l.uid.slice(-8)}</span></span>
-                    <span>${l.height.toFixed(1)}m</span>
-                    <span>${l.time}s</span>
-                </div>
-            `).join('');
-        }
-
-        // ========== MISSIONS ==========
+        // ========== МИССИИ (с 24-часовым таймером) ==========
         let dailyMissions = [
             { id: 'height100', name: 'Reach 100 meters', goal: 100, progress: 0, reward: 25, completed: false, type: 'height' },
-            { id: 'survive3min', name: 'Survive 3 minutes', goal: 180, progress: 0, reward: 50, completed: false, type: 'survive' },
-            { id: 'play20min', name: 'Play for 20 minutes (total)', goal: 1200, progress: 0, reward: 25, completed: false, type: 'totalTime' }
+            { id: 'survive3min', name: 'Survive 3 minutes', goal: 180, progress: 0, reward: 50, completed: false, type: 'survive', displayGoal: '3:00' },
+            { id: 'play20min', name: 'Play for 20 minutes (total)', goal: 1200, progress: 0, reward: 25, completed: false, type: 'totalTime', displayGoal: '20:00' },
+            { id: 'watchAds5', name: 'Watch 5 ads (daily)', goal: 5, progress: 0, reward: 50, completed: false, type: 'adsWatched' }
         ];
-        let lastResetDate = localStorage.getItem('lastDailyReset');
+        let bonusMission = { id: 'completeAll', name: 'Complete all daily missions', progress: 0, reward: 100, completed: false, type: 'bonus' };
+        let lastResetTimestamp = localStorage.getItem('lastResetTimestamp');
         let totalDailyPlayTime = parseFloat(localStorage.getItem('totalDailyPlayTime')) || 0;
 
         function saveMissions() {
             localStorage.setItem('dailyMissions', JSON.stringify(dailyMissions));
             localStorage.setItem('totalDailyPlayTime', totalDailyPlayTime);
+            localStorage.setItem('bonusMission', JSON.stringify(bonusMission));
         }
         function loadMissions() {
             let saved = localStorage.getItem('dailyMissions');
             if (saved) dailyMissions = JSON.parse(saved);
             totalDailyPlayTime = parseFloat(localStorage.getItem('totalDailyPlayTime')) || 0;
-            let totalMission = dailyMissions.find(m => m.id === 'play20min');
-            if (totalMission && !totalMission.completed) {
-                totalMission.progress = totalDailyPlayTime;
-                if (totalMission.progress >= totalMission.goal) {
-                    totalMission.completed = true;
-                    coins += totalMission.reward;
-                    updateCoinsUI();
-                    saveMissions();
-                }
+            let savedBonus = localStorage.getItem('bonusMission');
+            if (savedBonus) bonusMission = JSON.parse(savedBonus);
+            updateBonusMission();
+        }
+        function updateBonusMission() {
+            const allCompleted = dailyMissions.every(m => m.completed === true);
+            if (allCompleted && !bonusMission.completed) {
+                bonusMission.completed = true;
+                coins += bonusMission.reward;
+                updateCoinsUI();
+                saveMissions();
+                renderMissions();
+            } else if (!allCompleted && bonusMission.completed) {
+                bonusMission.completed = false;
+                saveMissions();
             }
         }
         function checkDailyReset() {
-            const today = new Date().toDateString();
-            if (lastResetDate !== today) {
+            const now = Date.now();
+            const last = parseInt(lastResetTimestamp);
+            if (isNaN(last) || (now - last) >= 24 * 60 * 60 * 1000) {
                 dailyMissions.forEach(m => { m.progress = 0; m.completed = false; });
+                bonusMission.completed = false;
                 totalDailyPlayTime = 0;
+                adWatchCountToday = 0;
+                saveAdCounter();
+                localStorage.setItem('lastResetTimestamp', now.toString());
+                lastResetTimestamp = now.toString();
                 saveMissions();
-                localStorage.setItem('lastDailyReset', today);
-                lastResetDate = today;
+                renderMissions();
             } else {
                 loadMissions();
+                loadAdCounter();
             }
         }
         checkDailyReset();
@@ -716,6 +763,7 @@
                 updateCoinsUI();
                 saveMissions();
                 renderMissions();
+                updateBonusMission();
             }
         }
         function updateMissionsHeight(height) {
@@ -748,6 +796,15 @@
                 renderMissions();
             }
         }
+        function updateMissionAdsWatched(count) {
+            let m = dailyMissions.find(m => m.id === 'watchAds5');
+            if (!m.completed) {
+                m.progress = Math.min(m.progress + count, m.goal);
+                checkMissionComplete(m);
+                saveMissions();
+                renderMissions();
+            }
+        }
         let lastTotalTimeUpdate = performance.now() / 1000;
         function updateDailyMissions() {
             if (!gameActive || gameOver || paused) return;
@@ -760,13 +817,30 @@
             }
             updateMissionsHeight(currentHeight);
         }
+        function formatTime(seconds) {
+            let mins = Math.floor(seconds / 60);
+            let secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        function updateResetTimerDisplay() {
+            const now = Date.now();
+            const last = parseInt(localStorage.getItem('lastResetTimestamp')) || now;
+            const elapsed = now - last;
+            const remaining = Math.max(0, 24 * 60 * 60 * 1000 - elapsed);
+            const hours = Math.floor(remaining / (60 * 60 * 1000));
+            const minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
+            const seconds = Math.floor((remaining % (60 * 1000)) / 1000);
+            document.getElementById('resetTimerDisplay').innerText = `Reset in: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
         function renderMissions() {
             const container = document.getElementById('missionsList');
             container.innerHTML = '';
             dailyMissions.forEach(mission => {
                 const div = document.createElement('div'); div.className = 'mission-item';
                 let percent = (mission.progress / mission.goal) * 100;
-                let text = mission.type === 'height' ? `${mission.progress}/${mission.goal} m` : `${Math.floor(mission.progress)}/${mission.goal} sec`;
+                let displayProgress = (mission.type === 'survive' || mission.type === 'totalTime') ? formatTime(mission.progress) : mission.progress;
+                let displayGoal = mission.displayGoal ? mission.displayGoal : (mission.type === 'adsWatched' ? mission.goal : mission.goal);
+                let text = mission.type === 'height' ? `${mission.progress}/${mission.goal} m` : (mission.type === 'adsWatched' ? `${mission.progress}/${mission.goal} ads` : `${displayProgress}/${displayGoal}`);
                 div.innerHTML = `
                     <div class="mission-name">${mission.name}</div>
                     <div class="mission-progress">${text}</div>
@@ -776,6 +850,15 @@
                 `;
                 container.appendChild(div);
             });
+            const bonusDiv = document.createElement('div'); bonusDiv.className = 'mission-item';
+            bonusDiv.innerHTML = `
+                <div class="mission-name">⭐ ${bonusMission.name}</div>
+                <div class="mission-progress">${bonusMission.completed ? '✓ Completed' : 'Complete all missions above'}</div>
+                <div class="mission-reward">Reward: ${bonusMission.reward} 🌟</div>
+                ${bonusMission.completed ? '<div class="mission-completed">✓ Completed</div>' : ''}
+            `;
+            container.appendChild(bonusDiv);
+            updateResetTimerDisplay();
         }
 
         // ========== PLATFORM MANAGEMENT ==========
@@ -842,39 +925,66 @@
         joystickBase.addEventListener('pointercancel', handleJoystickEnd);
         document.addEventListener('pointerup', handleJoystickEnd);
 
-        // ========== REVIVE ==========
-        let reviveCount = 0;
-        const MAX_REVIVES = 5;
-        function showRewardedAd() {
-            return new Promise((resolve) => { resolve(true); });
-        }
-        async function revive() {
-            if (!gameOver) return;
-            if (reviveCount >= MAX_REVIVES) return;
-            const rewarded = await showRewardedAd();
-            if (rewarded) {
-                reviveCount++;
-                gameActive = true;
-                gameOver = false;
-                ball.x = lastSafeX;
-                ball.y = lastSafeY - 25;
-                ball.vy = -11;
-                ball.vx = 0;
-                lavaY += 2 * METER_TO_PX;
-                if (lavaY > START_PLATFORM_Y + 200) lavaY = START_PLATFORM_Y + 200;
-                if (!timerRunning) {
-                    timerRunning = true;
-                    lastTimestamp = performance.now();
-                }
-                document.getElementById('rewardMenu').classList.add('hidden');
-                document.getElementById('gameScreen').classList.remove('game-over');
-                const adBtn = document.getElementById('continueAdBtn');
-                if (reviveCount >= MAX_REVIVES) {
-                    adBtn.disabled = true;
-                    adBtn.style.opacity = '0.5';
-                    adBtn.innerHTML = 'NO MORE REVIVES';
-                }
+        // ========== LEADERBOARD (РАБОЧИЙ) ==========
+        async function fetchLeaders() {
+            try {
+                const snapshot = await db.ref('leaders').orderByChild('height').limitToLast(500).once('value');
+                const leaders = [];
+                snapshot.forEach(child => {
+                    leaders.push(child.val());
+                });
+                return leaders.reverse();
+            } catch(e) {
+                console.error("fetchLeaders error", e);
+                return [];
             }
+        }
+        async function addLeader(uid, nickname, height, time) {
+            if (!uid || height <= 0) return;
+            try {
+                const snapshot = await db.ref(`leaders/${uid}`).once('value');
+                const data = snapshot.val();
+                if (data && data.height >= height) return;
+                await db.ref(`leaders/${uid}`).set({
+                    uid: uid,
+                    nickname: nickname,
+                    height: height,
+                    time: time.toFixed(1)
+                });
+                renderLeaders();
+                await loadPersonalBest();
+            } catch(e) {
+                console.error("addLeader error", e);
+            }
+        }
+        async function loadPersonalBest() {
+            if (!playerUid) return;
+            try {
+                const snapshot = await db.ref(`leaders/${playerUid}`).once('value');
+                const data = snapshot.val();
+                if (data && data.height > maxHeight) {
+                    maxHeight = data.height;
+                    document.getElementById('maxHeightDisplay').innerText = maxHeight.toFixed(1);
+                }
+            } catch(e) {
+                console.error("loadPersonalBest error", e);
+            }
+        }
+        async function renderLeaders() {
+            const list = document.getElementById('leaderList');
+            list.innerHTML = '<div class="leader-item">Loading...</div>';
+            const leaders = await fetchLeaders();
+            if (!leaders.length) {
+                list.innerHTML = '<div class="leader-item">No records yet</div>';
+                return;
+            }
+            list.innerHTML = leaders.slice(0, 500).map((l, i) => `
+                <div class="leader-item ${l.uid === playerUid ? 'current-user' : ''}">
+                    <span>${i+1}. ${l.nickname} <span style="font-size:10px; color:#aaccff;">${l.uid.slice(-8)}</span></span>
+                    <span>${l.height.toFixed(1)}m</span>
+                    <span>${l.time}s</span>
+                </div>
+            `).join('');
         }
 
         function resetGame() {
@@ -1073,14 +1183,54 @@
             document.getElementById('coinsDisplay').innerText = Math.floor(coins);
         }
 
-        // ========== SHOP (с кастомным скином) ==========
+        // ========== SHOP (с рекламой и кастомным скином) ==========
+        function openZoomModal(imgBase64) {
+            return new Promise((resolve) => {
+                const modal = document.createElement('div');
+                modal.className = 'zoom-modal';
+                const canvasZoom = document.createElement('canvas');
+                canvasZoom.width = 300;
+                canvasZoom.height = 300;
+                canvasZoom.className = 'zoom-canvas';
+                let scale = 1.0;
+                let img = new Image();
+                img.onload = () => {
+                    function redraw() {
+                        const w = img.width * scale, h = img.height * scale;
+                        canvasZoom.getContext('2d').clearRect(0, 0, 300, 300);
+                        canvasZoom.getContext('2d').drawImage(img, (300 - w) / 2, (300 - h) / 2, w, h);
+                    }
+                    redraw();
+                    modal.innerHTML = `<div class="zoom-content">${canvasZoom.outerHTML}<div class="zoom-controls"><button id="zoomOut">−</button><button id="zoomIn">+</button></div><button id="zoomConfirm" class="zoom-confirm">✅ Confirm</button></div>`;
+                    const cnv = modal.querySelector('canvas');
+                    const zoomCtx = cnv.getContext('2d');
+                    const zoomOut = modal.querySelector('#zoomOut');
+                    const zoomIn = modal.querySelector('#zoomIn');
+                    const confirm = modal.querySelector('#zoomConfirm');
+                    zoomOut.onclick = () => { scale = Math.max(0.5, scale - 0.1); const w = img.width * scale, h = img.height * scale; zoomCtx.clearRect(0, 0, 300, 300); zoomCtx.drawImage(img, (300 - w) / 2, (300 - h) / 2, w, h); };
+                    zoomIn.onclick = () => { scale = Math.min(2.0, scale + 0.1); const w = img.width * scale, h = img.height * scale; zoomCtx.clearRect(0, 0, 300, 300); zoomCtx.drawImage(img, (300 - w) / 2, (300 - h) / 2, w, h); };
+                    confirm.onclick = () => {
+                        const offCanvas = document.createElement('canvas');
+                        offCanvas.width = 512;
+                        offCanvas.height = 512;
+                        const offCtx = offCanvas.getContext('2d');
+                        const w = img.width * scale, h = img.height * scale;
+                        offCtx.drawImage(img, (512 - w) / 2, (512 - h) / 2, w, h);
+                        const final = offCanvas.toDataURL('image/png');
+                        modal.remove();
+                        resolve(final);
+                    };
+                    document.body.appendChild(modal);
+                };
+                img.src = imgBase64;
+            });
+        }
         function renderShop() {
             document.getElementById('shopBalance').innerText = Math.floor(coins);
             const container = document.getElementById('shopList');
             container.innerHTML = '<div class="shop-items"></div>';
             const itemsDiv = container.querySelector('.shop-items');
 
-            // Обычные скины
             skins.forEach(skin => {
                 const unlocked = unlockedSkins.includes(skin.id);
                 const equipped = !isCustomSkinActive && currentSkinId === skin.id;
@@ -1097,7 +1247,7 @@
                 itemsDiv.appendChild(div);
             });
 
-            // Кастомный скин (кнопка)
+            // Кастомный скин
             const customDiv = document.createElement('div');
             customDiv.className = 'shop-item' + (isCustomSkinActive ? ' equipped' : '');
             customDiv.innerHTML = `
@@ -1108,11 +1258,20 @@
             `;
             itemsDiv.appendChild(customDiv);
 
+            // Реклама за монеты
+            const adDiv = document.createElement('div');
+            adDiv.className = 'shop-item';
+            adDiv.innerHTML = `
+                <div class="preview" style="background: linear-gradient(135deg, #ffa500, #ff8c00);"></div>
+                <div>+10 Coins</div>
+                <div class="rarity-badge">Daily (${5 - adWatchCountToday} left)</div>
+                <button class="shop-btn shop-btn-ad" id="adCoinBtn">Watch Ad (+10🌟)</button>
+            `;
+            itemsDiv.appendChild(adDiv);
+
             attachShopEvents();
         }
-
         function attachShopEvents() {
-            // Обработка покупки обычных скинов
             document.querySelectorAll('.shop-btn.buy').forEach(btn => {
                 btn.onclick = () => {
                     const id = btn.dataset.id;
@@ -1124,7 +1283,7 @@
                         localStorage.setItem('unlockedSkins', JSON.stringify(unlockedSkins));
                         equipSkin(id);
                         renderShop();
-                    }
+                    } else alert('Not enough coins!');
                 };
             });
             document.querySelectorAll('.shop-btn.equip').forEach(btn => {
@@ -1135,59 +1294,47 @@
                 };
             });
 
-            // Кастомный скин
             const customBtn = document.getElementById('customSkinBtn');
             if (customBtn) {
-                customBtn.onclick = () => {
+                customBtn.onclick = async () => {
                     if (coins >= 3000) {
-                        // Списываем монеты
                         coins -= 3000;
                         updateCoinsUI();
-                        // Запрашиваем изображение
-                        const fileInput = document.createElement('input');
-                        fileInput.type = 'file';
-                        fileInput.accept = 'image/*';
-                        fileInput.onchange = (e) => {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.onchange = async (e) => {
                             const file = e.target.files[0];
                             if (file) {
                                 const reader = new FileReader();
-                                reader.onload = (ev) => {
-                                    const base64 = ev.target.result;
-                                    customSkinImage = base64;
+                                reader.onload = async (ev) => {
+                                    const finalImg = await openZoomModal(ev.target.result);
+                                    customSkinImage = finalImg;
                                     localStorage.setItem('customSkinImage', customSkinImage);
                                     isCustomSkinActive = true;
                                     localStorage.setItem('isCustomSkinActive', 'true');
-                                    // Сбрасываем активный обычный скин (чтобы не было путаницы)
-                                    localStorage.setItem('currentSkin', '');
                                     currentSkinId = '';
+                                    localStorage.setItem('currentSkin', '');
                                     renderShop();
-                                    showNotification("Custom skin equipped! You can change it again for 3000🌟.");
                                 };
                                 reader.readAsDataURL(file);
                             }
                         };
-                        fileInput.click();
-                    } else {
-                        showNotification("Not enough coins! Need 3000🌟");
-                    }
+                        input.click();
+                    } else alert('Not enough coins! Need 3000🌟');
                 };
             }
-        }
 
+            const adCoinBtn = document.getElementById('adCoinBtn');
+            if (adCoinBtn) {
+                adCoinBtn.onclick = () => watchAdForCoins().then(() => renderShop());
+            }
+        }
         function equipSkin(id) {
-            // При выборе обычного скина отключаем кастомный
             isCustomSkinActive = false;
             localStorage.setItem('isCustomSkinActive', 'false');
             currentSkinId = id;
             localStorage.setItem('currentSkin', id);
-            showNotification(`Equipped: ${skins.find(s => s.id === id).name}`);
-        }
-
-        function showNotification(text) {
-            // Упрощённое уведомление (можно убрать или сделать тост)
-            console.log(text);
-            // Если хочешь просто alert, раскомментируй:
-            // alert(text);
         }
 
         // ========== UI NAVIGATION ==========
@@ -1213,7 +1360,18 @@
             } 
         });
         resumeBtn.addEventListener('click', () => { paused = false; pauseMenu.classList.add('hidden'); if (timerRunning) lastTimestamp = performance.now(); });
-        finishGameBtn.addEventListener('click', () => { paused = false; pauseMenu.classList.add('hidden'); showMenu(); });
+        finishGameBtn.addEventListener('click', async () => {
+            if (gameActive && !gameOver) {
+                if (currentHeight > maxHeight) {
+                    maxHeight = currentHeight;
+                    await addLeader(playerUid, playerNick, maxHeight, gameTimer);
+                    document.getElementById('maxHeightDisplay').innerText = maxHeight.toFixed(1);
+                }
+                gameActive = false;
+                paused = false;
+                showMenu();
+            }
+        });
         restartAfterDeathBtn.addEventListener('click', () => { rewardMenu.classList.add('hidden'); document.getElementById('gameScreen').classList.remove('game-over'); resetGame(); });
         menuAfterDeathBtn.addEventListener('click', () => { rewardMenu.classList.add('hidden'); document.getElementById('gameScreen').classList.remove('game-over'); showMenu(); });
         continueAdBtn.addEventListener('click', () => { revive(); });
@@ -1258,8 +1416,8 @@
             modal.className = 'settings-modal';
             modal.innerHTML = `
                 <div class="settings-content">
-                    <h3>⚙️ SENSITIVITY</h3>
-                    <label>Adjust joystick sensitivity (1–10)</label>
+                    <h3>⚙️ SETTINGS</h3>
+                    <label>Sensitivity (1–10)</label>
                     <input type="range" id="sensitivitySlider" min="1" max="10" step="0.5" value="${sensitivity}">
                     <div>Current: <span id="sensitivityValue" class="sensitivity-value">${sensitivity}</span></div>
                     <button id="closeSettings">OK</button>
@@ -1276,7 +1434,6 @@
             document.getElementById('closeSettings').onclick = () => modal.remove();
         }
         document.getElementById('settingsBtn').addEventListener('click', openSettings);
-
         document.getElementById('playBtn').addEventListener('click', startGame);
         document.getElementById('leadersBtn').addEventListener('click', showLeaders);
         document.getElementById('shopBtn').addEventListener('click', showShop);
@@ -1284,7 +1441,6 @@
         document.getElementById('backFromLeadersBtn').addEventListener('click', showMenu);
         document.getElementById('backFromShopBtn').addEventListener('click', showMenu);
         document.getElementById('backFromMissionsBtn').addEventListener('click', showMenu);
-
         document.getElementById('copyIdBtn').onclick = () => {
             navigator.clipboard.writeText(playerUid);
             const btn = document.getElementById('copyIdBtn');
@@ -1296,6 +1452,11 @@
         updateCoinsUI();
         initAuth().then(() => {
             showMenu();
+            setInterval(() => {
+                if (!missionsScreen.classList.contains('hidden')) {
+                    updateResetTimerDisplay();
+                }
+            }, 1000);
         }).catch(err => {
             console.error(err);
             alert('Authentication failed. Please check your internet connection.');
