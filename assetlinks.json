@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.velta.nightjumper.newgame",
+    "sha256_cert_fingerprints": ["8C:70:3B:09:BF:D9:CD:2F:E4:44:49:A9:97:7A:B7:69:B3:80:A1:C6:4E:74:81:70:75:DA:B5:B8:A4:B2:AA:56"]
+  }
+}]
