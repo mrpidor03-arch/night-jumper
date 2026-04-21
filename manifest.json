@@ -1,15 +1,46 @@
 {
+  "packageId": "com.velta.nightjumper.newgame",
+  "host": "willowy-donut-d1dac5.netlify.app",
   "name": "Night Jumper",
-  "short_name": "Jumper",
-  "start_url": "index.html",
+  "launcherName": "Jumper",
   "display": "fullscreen",
-  "background_color": "#1a1f35",
-  "theme_color": "#1a1f35",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "themeColor": "#0A0F24",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#0A0F24",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://willowy-donut-d1dac5.netlify.app/menu_image.png",
+  "splashScreenFadeOutDuration": 1500,
+  "signingKey": {
+    "path": "C:\\nightjumper-android\\android.keystore",
+    "alias": "nightjumper"
+  },
+  "appVersionName": "11",
+  "appVersionCode": 11,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://willowy-donut-d1dac5.netlify.app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://willowy-donut-d1dac5.netlify.app/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [],
+  "appVersion": "11"
 }
