@@ -262,9 +262,30 @@
         .canvas-container { position: relative; width: 100%; display: flex; justify-content: center; }
         canvas { display: block; width: 100%; max-width: 380px; height: auto; border-radius: 25px; background: #1a1f35; touch-action: none; }
         .joystick-area { width: 100%; display: flex; justify-content: center; margin-top: 10px; }
-        .joystick-base { width: 90px; height: 90px; background: #3d4a7a; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 0 #1e2745, 0 8px 15px black; border: 2px solid #5c6fb1; touch-action: none; animation: joystickBreath 2s ease infinite; }
-        @keyframes joystickBreath { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
-        .joystick-thumb { width: 35px; height: 35px; background: #6d82d1; border-radius: 50%; box-shadow: 0 3px 0 #35406b; transition: transform 0.02s; will-change: transform; border: 2px solid #a2b9ff; }
+        .joystick-base {
+            width: 90px;
+            height: 90px;
+            background: #3d4a7a;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 0 #1e2745, 0 8px 15px black;
+            border: 2px solid #5c6fb1;
+            touch-action: none;
+            transition: transform 0.05s linear;
+            will-change: transform;
+        }
+        .joystick-thumb {
+            width: 35px;
+            height: 35px;
+            background: #6d82d1;
+            border-radius: 50%;
+            box-shadow: 0 3px 0 #35406b;
+            transition: transform 0.02s;
+            will-change: transform;
+            border: 2px solid #a2b9ff;
+        }
 
         /* ========== GAME OVER ========== */
         #gameScreen.game-over .stats, #gameScreen.game-over .joystick-area { display: none !important; }
@@ -385,6 +406,28 @@
             font-size: 14px;
             color: #ffd966;
         }
+
+        /* ========== COUNTDOWN OVERLAY ========== */
+        #countdownOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+            border-radius: 25px;
+        }
+        #countdownText {
+            font-size: 80px;
+            font-weight: bold;
+            color: #ffd966;
+            text-shadow: 0 0 20px #ff6600;
+        }
     </style>
 </head>
 <body>
@@ -434,6 +477,8 @@
             <div class="game-over-fullscreen"><div class="game-over-content"><h1 class="game-over-title">GAME OVER</h1><div class="height-result"><span class="label">YOUR HEIGHT</span><span class="value" id="deathHeightDisplay">0.0m</span></div><div id="biomeBonusDisplay" class="bonus-text"></div><div class="game-over-buttons"><button class="go-btn go-btn-ad" id="continueAdBtn"><span class="btn-icon">📺</span> CONTINUE WITH AD</button><button class="go-btn go-btn-restart" id="restartAfterDeathBtn">RESTART</button><button class="go-btn go-btn-menu" id="menuAfterDeathBtn">MAIN MENU</button></div></div></div>
         </div>
         <div class="joystick-area"><div class="joystick-base" id="joystickBase"><div class="joystick-thumb" id="joystickThumb"></div></div></div>
+        <!-- Countdown overlay -->
+        <div id="countdownOverlay"><div id="countdownText">3</div></div>
     </div>
 </div>
 
@@ -441,13 +486,26 @@
     (function() {
         // ========== НАСТРОЙКИ ==========
         let sensitivity = parseFloat(localStorage.getItem('sensitivity'));
-        if (isNaN(sensitivity)) sensitivity = 5;
+        if (isNaN(sensitivity)) sensitivity = 2.5;
         function saveSensitivity(val) {
             sensitivity = val;
             localStorage.setItem('sensitivity', sensitivity);
         }
 
-        // ========== ГЕНЕРАЦИЯ ID ТОЛЬКО БОЛЬШИМИ БУКВАМИ ==========
+        // ========== SCALE JOYSTICK ==========
+        let joyScale = parseFloat(localStorage.getItem('joyScale'));
+        if (isNaN(joyScale)) joyScale = 1.0;
+        function applyJoyScale(scale) {
+            const base = document.getElementById('joystickBase');
+            if (base) base.style.transform = `scale(${scale})`;
+        }
+        function saveJoyScale(val) {
+            joyScale = val;
+            localStorage.setItem('joyScale', joyScale);
+            applyJoyScale(joyScale);
+        }
+
+        // ========== ГЕНЕРАЦИЯ ID ==========
         function generatePlayerId() {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
             let id = '#';
@@ -551,7 +609,7 @@
 
         let lavaY = START_PLATFORM_Y + 200;
         let stars = [];
-        for (let i = 0; i < 200; i++) stars.push({ x: 20 + Math.random() * (canvas.width - 40), y: 20 + Math.random() * (canvas.height - 40) });
+        for (let i = 0; i < 100; i++) stars.push({ x: 20 + Math.random() * (canvas.width - 40), y: 20 + Math.random() * (canvas.height - 40) });
 
         const goldenPlatform = { x: 120, y: START_PLATFORM_Y, width: PLATFORM_WIDTH, height: PLATFORM_HEIGHT };
         let globalPlatformCounter = 0;
@@ -584,7 +642,6 @@
         // ========== РЕКЛАМА (тестовая) ==========
         function showRewardedAd() {
             return new Promise((resolve) => {
-                // Здесь будет вызов реального AdMob
                 resolve(true);
             });
         }
@@ -621,7 +678,7 @@
             }
         }
 
-        // ========== РЕКЛАМА В МАГАЗИНЕ (10 МОНЕТ) ==========
+        // ========== РЕКЛАМА В МАГАЗИНЕ ==========
         async function watchAdForCoins() {
             if (adWatchCountToday >= 5) {
                 alert("You've already watched 5 ads today! Come back tomorrow.");
@@ -699,7 +756,7 @@
             });
         }
 
-        // ========== МИССИИ (с 24-часовым таймером) ==========
+        // ========== МИССИИ ==========
         let dailyMissions = [
             { id: 'height100', name: 'Reach 100 meters', goal: 100, progress: 0, reward: 25, completed: false, type: 'height' },
             { id: 'survive3min', name: 'Survive 3 minutes', goal: 180, progress: 0, reward: 50, completed: false, type: 'survive', displayGoal: '3:00' },
@@ -925,7 +982,7 @@
         joystickBase.addEventListener('pointercancel', handleJoystickEnd);
         document.addEventListener('pointerup', handleJoystickEnd);
 
-        // ========== LEADERBOARD (РАБОЧИЙ) ==========
+        // ========== LEADERBOARD ==========
         async function fetchLeaders() {
             try {
                 const snapshot = await db.ref('leaders').orderByChild('height').limitToLast(500).once('value');
@@ -1012,12 +1069,15 @@
             lavaY = START_PLATFORM_Y + 200;
         }
 
-        // ========== GAME LOOP ==========
+        // ========== GAME LOOP (оптимизирован) ==========
         function updateGame() {
             if (!gameActive || gameOver || paused) return;
 
-            let targetVx = joystickX * sensitivity;
-            ball.vx += (targetVx - ball.vx) * 0.2;
+            let rawTargetVx = joystickX * sensitivity;
+            let abs = Math.abs(rawTargetVx);
+            let sign = rawTargetVx > 0 ? 1 : -1;
+            let targetVx = sign * (Math.pow(abs, 1.2) * 1.5);
+            ball.vx += (targetVx - ball.vx) * 0.15;
             ball.x += ball.vx;
             if (ball.x - BALL_RADIUS < 0) { ball.x = BALL_RADIUS; ball.vx = 0; }
             if (ball.x + BALL_RADIUS > canvas.width) { ball.x = canvas.width - BALL_RADIUS; ball.vx = 0; }
@@ -1183,7 +1243,7 @@
             document.getElementById('coinsDisplay').innerText = Math.floor(coins);
         }
 
-        // ========== SHOP (с рекламой и кастомным скином) ==========
+        // ========== SHOP ==========
         function openZoomModal(imgBase64) {
             return new Promise((resolve) => {
                 const modal = document.createElement('div');
@@ -1247,7 +1307,6 @@
                 itemsDiv.appendChild(div);
             });
 
-            // Кастомный скин
             const customDiv = document.createElement('div');
             customDiv.className = 'shop-item' + (isCustomSkinActive ? ' equipped' : '');
             customDiv.innerHTML = `
@@ -1258,7 +1317,6 @@
             `;
             itemsDiv.appendChild(customDiv);
 
-            // Реклама за монеты
             const adDiv = document.createElement('div');
             adDiv.className = 'shop-item';
             adDiv.innerHTML = `
@@ -1337,6 +1395,41 @@
             localStorage.setItem('currentSkin', id);
         }
 
+        // ========== COUNTDOWN START GAME ==========
+        async function startGame() {
+            menuScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            await loadPersonalBest();
+
+            const overlay = document.getElementById('countdownOverlay');
+            const countdownText = document.getElementById('countdownText');
+            overlay.style.display = 'flex';
+            
+            for (let i = 3; i >= 0; i--) {
+                if (i === 0) {
+                    countdownText.innerText = 'GO!';
+                    await new Promise(r => setTimeout(r, 800));
+                } else {
+                    countdownText.innerText = i;
+                    await new Promise(r => setTimeout(r, 1000));
+                }
+            }
+            overlay.style.display = 'none';
+            
+            resetGame();
+            lastTotalTimeUpdate = performance.now() / 1000;
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            animationFrame = requestAnimationFrame(function loop() {
+                if (gameActive && !gameOver && !paused) {
+                    updateGame();
+                    updateDailyMissions();
+                }
+                draw();
+                updateStats();
+                animationFrame = requestAnimationFrame(loop);
+            });
+        }
+
         // ========== UI NAVIGATION ==========
         const pauseBtn = document.getElementById('pauseButton');
         const pauseMenu = document.getElementById('pauseMenu');
@@ -1393,24 +1486,6 @@
         function showShop() { menuScreen.classList.add('hidden'); shopScreen.classList.remove('hidden'); leadersScreen.classList.add('hidden'); missionsScreen.classList.add('hidden'); gameScreen.classList.add('hidden'); renderShop(); }
         function showMissions() { menuScreen.classList.add('hidden'); missionsScreen.classList.remove('hidden'); leadersScreen.classList.add('hidden'); shopScreen.classList.add('hidden'); gameScreen.classList.add('hidden'); renderMissions(); }
 
-        async function startGame() {
-            menuScreen.classList.add('hidden');
-            gameScreen.classList.remove('hidden');
-            await loadPersonalBest();
-            resetGame();
-            lastTotalTimeUpdate = performance.now() / 1000;
-            if (animationFrame) cancelAnimationFrame(animationFrame);
-            animationFrame = requestAnimationFrame(function loop() {
-                if (gameActive && !gameOver && !paused) {
-                    updateGame();
-                    updateDailyMissions();
-                }
-                draw();
-                updateStats();
-                animationFrame = requestAnimationFrame(loop);
-            });
-        }
-
         function openSettings() {
             const modal = document.createElement('div');
             modal.className = 'settings-modal';
@@ -1420,19 +1495,30 @@
                     <label>Sensitivity (1–10)</label>
                     <input type="range" id="sensitivitySlider" min="1" max="10" step="0.5" value="${sensitivity}">
                     <div>Current: <span id="sensitivityValue" class="sensitivity-value">${sensitivity}</span></div>
+                    <label>Joystick Scale (0.7–1.5)</label>
+                    <input type="range" id="joyScaleSlider" min="0.7" max="1.5" step="0.05" value="${joyScale}">
+                    <div>Current: <span id="joyScaleValue" class="sensitivity-value">${joyScale}</span></div>
                     <button id="closeSettings">OK</button>
                 </div>
             `;
             document.body.appendChild(modal);
-            const slider = document.getElementById('sensitivitySlider');
-            const valueSpan = document.getElementById('sensitivityValue');
-            slider.oninput = () => {
-                const val = parseFloat(slider.value);
-                valueSpan.innerText = val;
+            const sensSlider = document.getElementById('sensitivitySlider');
+            const sensSpan = document.getElementById('sensitivityValue');
+            sensSlider.oninput = () => {
+                const val = parseFloat(sensSlider.value);
+                sensSpan.innerText = val;
                 saveSensitivity(val);
+            };
+            const scaleSlider = document.getElementById('joyScaleSlider');
+            const scaleSpan = document.getElementById('joyScaleValue');
+            scaleSlider.oninput = () => {
+                const val = parseFloat(scaleSlider.value);
+                scaleSpan.innerText = val;
+                saveJoyScale(val);
             };
             document.getElementById('closeSettings').onclick = () => modal.remove();
         }
+
         document.getElementById('settingsBtn').addEventListener('click', openSettings);
         document.getElementById('playBtn').addEventListener('click', startGame);
         document.getElementById('leadersBtn').addEventListener('click', showLeaders);
@@ -1450,6 +1536,7 @@
         };
 
         updateCoinsUI();
+        applyJoyScale(joyScale);
         initAuth().then(() => {
             showMenu();
             setInterval(() => {
